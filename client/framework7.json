@@ -1,0 +1,26 @@
+{
+  "cwd": "/home/maverick/global_qrcode/client",
+  "type": [
+    "pwa",
+    "capacitor"
+  ],
+  "name": "PersonalQrCode",
+  "framework": "svelte",
+  "template": "tabs",
+  "bundler": "vite",
+  "cssPreProcessor": false,
+  "theming": {
+    "customColor": true,
+    "color": "#00f4ff",
+    "darkMode": true,
+    "iconFonts": true
+  },
+  "customBuild": false,
+  "pkg": "io.framework7.myapp",
+  "capacitor": {
+    "platforms": [
+      "ios",
+      "android"
+    ]
+  }
+}
