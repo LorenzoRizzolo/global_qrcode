@@ -1,6 +1,6 @@
 import qrImage from 'qr-image';
 import fs from 'fs';
-import { i as is_logged, g as get_user_by_token, c as connection } from './login-Go6X9AwE.js';
+import { i as is_logged, g as get_user_by_token, c as connection, d as data, o as ora } from './login-XYCRM736.js';
 import { j as json } from './index-BIAFQWR9.js';
 import 'dotenv';
 import 'mysql2/promise';
@@ -9,7 +9,7 @@ async function generate_qrcode(user, filedata) {
   try {
     let qrcode_path;
     let filepath = "files/";
-    const result = await connection.execute("INSERT INTO qrcodes(`id_user`, `title`) VALUES (?, ?)", [user.id, filedata.title]);
+    const result = await connection.execute("INSERT INTO qrcodes(`id_user`, `title`, `data`, `ora`, `stato`) VALUES (?, ?)", [user.id, filedata.title, data(), ora(), filedata.stato]);
     const insertedId = result[0].insertId;
     qrcode_path = `qrcodes/qrcode_${insertedId}.png`;
     filepath += `file_${insertedId}`;
@@ -27,16 +27,16 @@ async function generate_qrcode(user, filedata) {
 }
 async function POST({ request }) {
   try {
-    var data = await request.json();
-    if (await is_logged(data.token)) {
-      var type = data.type;
-      var user = await get_user_by_token(data.token);
+    var data2 = await request.json();
+    if (await is_logged(data2.token)) {
+      var type = data2.type;
+      var user = await get_user_by_token(data2.token);
       let qrcode = "";
       switch (type) {
         case "text":
         case "url":
         case "number":
-          qrcode = await generate_qrcode(user, data.filedata);
+          qrcode = await generate_qrcode(user, data2.filedata);
           break;
         default:
           return json({ code: 100, request: "ko", detail: "Type of qrcode isn't valid" });
@@ -52,4 +52,4 @@ async function POST({ request }) {
 }
 
 export { POST };
-//# sourceMappingURL=_server-CxVCn5qM.js.map
+//# sourceMappingURL=_server-vKsVc8VJ.js.map

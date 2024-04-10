@@ -1,6 +1,7 @@
 import qrImage from 'qr-image';
 import fs from 'fs';
 import db from "./db"; // Assuming db is the default export from "db" module
+import { data, ora } from './functions';
 
 export async function generate_qrcode(user, filedata) {
     try {
@@ -8,7 +9,7 @@ export async function generate_qrcode(user, filedata) {
         let qrcode_path
         let filepath = "files/"
 
-        const result = await db.execute('INSERT INTO qrcodes(`id_user`, `title`) VALUES (?, ?)', [user.id, filedata.title]);
+        const result = await db.execute('INSERT INTO qrcodes(`id_user`, `title`, `data`, `ora`, `stato`) VALUES (?, ?)', [user.id, filedata.title, data(), ora(), filedata.stato]);
         const insertedId = result[0].insertId;
         qrcode_path = `qrcodes/qrcode_${insertedId}.png`
         filepath += `file_${insertedId}`

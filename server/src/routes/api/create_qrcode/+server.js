@@ -9,7 +9,8 @@ export async function POST({ request }){
     //       "extension":"txt",
     //       "type":"text",
     //       "content":"ciao",
-    //       "title":"paper"
+    //       "title":"paper",
+    //       "stato":"pubblico" / "privato"
     //     }
     //   }
     try{

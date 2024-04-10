@@ -19,6 +19,22 @@ function generaToken(lunghezza = 20) {
   }
   return token;
 }
+function data() {
+  var currentDate = /* @__PURE__ */ new Date();
+  var currentYear = currentDate.getFullYear();
+  var currentMonth = currentDate.getMonth() + 1;
+  var currentDay = currentDate.getDate();
+  var data2 = currentYear + "/" + currentMonth + "/" + currentDay;
+  return data2;
+}
+function ora() {
+  var currentDate = /* @__PURE__ */ new Date();
+  var currentHours = currentDate.getHours();
+  var currentMinutes = currentDate.getMinutes();
+  var currentSeconds = currentDate.getSeconds();
+  var ora2 = currentHours + ":" + currentMinutes + ":" + currentSeconds;
+  return ora2;
+}
 async function login(username, password) {
   const result = await connection.execute("SELECT * FROM users WHERE username=? and password=?", [username, password]);
   var find = result[0].length;
@@ -42,5 +58,5 @@ async function is_logged(token) {
   return exists;
 }
 
-export { connection as c, get_user_by_token as g, is_logged as i, login as l };
-//# sourceMappingURL=login-Go6X9AwE.js.map
+export { connection as c, data as d, get_user_by_token as g, is_logged as i, login as l, ora as o };
+//# sourceMappingURL=login-XYCRM736.js.map
