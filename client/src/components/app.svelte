@@ -53,7 +53,7 @@
   // Framework7 Parameters
   let f7params = {
     name: 'PersonalQrCode', // App name
-    theme: 'auto', // Automatic theme detection
+    theme: 'md', // Automatic theme detection
     colors: {
       primary: '#00f4ff',
     },
