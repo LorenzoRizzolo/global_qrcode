@@ -8,10 +8,6 @@ import ScannerPage from "../pages/scannerizza.svelte"
 var routes = [
   {
     path: '/',
-    component: HomePage,
-  },
-  {
-    path: '/genera/',
     component: generaPage,
   },
   {

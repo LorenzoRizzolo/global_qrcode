@@ -32,9 +32,6 @@ export function is_logged() {
           })
           .then(response => response.json())
           .then(data => {
-            if(data.code==1){
-                console.log(data)
-            }
             resolve(data.code)
           })
           .catch(error => {
