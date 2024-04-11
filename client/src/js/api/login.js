@@ -47,3 +47,11 @@ export function is_logged() {
           });
   });
 }
+
+export function logout(){
+  console.log("logout")
+  if(localStorage.getItem("token")){
+    localStorage.clear()
+    location.reload()
+  }
+}

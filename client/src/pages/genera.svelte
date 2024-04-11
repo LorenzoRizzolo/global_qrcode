@@ -8,15 +8,21 @@ import {
       List,
       ListInput, 
       TextEditor,
+      NavRight,
+      Link,
+      Icon,
       f7
     } from 'framework7-svelte';
 
     import { is_logged } from "../js/api/login"
     import Login from '../components/login.svelte';
     import { genera_qrcode } from "../js/api/qrcode"
+    import { saveAs } from "file-saver"
 
     let tipologie = [
         "testo",
+        "link",
+        "numero",
         "video",
         "immagine",
         "audio",
@@ -26,16 +32,18 @@ import {
         title:"Titolo del QrCode",
         content:"",
         extension:"",
-        type:tipologie[0]
+        type:tipologie[0],
+        stato:"privato"
     }
 
-    let picker_tipo
+    let picker_tipo, picker_stato
     function onPageInit() {
         filedata = {
-            title:"Titolo del QrCode",
+            title:default_title,
             content:"",
             extension:"",
-            type:tipologie[0]
+            type:tipologie[0],
+            stato:"privato"
         }
         picker_tipo = f7.picker.create({
             inputEl: "#picker-tipo",
@@ -52,17 +60,40 @@ import {
                 }
             }
         });
+        picker_stato = f7.picker.create({
+            inputEl: "#picker-stato",
+            value: [filedata.stato],
+            cols: [
+                {
+                    textAlign: 'center',
+                    values: ["privato", "pubblico"],
+                }
+            ],
+            on: {
+                change(picker, values) {
+                    filedata.stato = values[0]
+                }
+            }
+        });
     }
+
+    let default_title = "Titolo del QrCode"
     
     function onPageBeforeRemove(){
         picker_tipo.destroy()
+        picker_stato.destroy()
     }
 
+    let response = {}
+    let waiting = 0
     function genera_qr(){
         if(filedata.content){
+            if(filedata.title==default_title){ filedata.title="QrCode anonimo" }
             f7.dialog.confirm("Confermi di voler generare il qrcode ?", () => {
+                waiting=1
                 genera_qrcode(filedata).then(res=>{
-                    console.log(res)
+                    response=res
+                    waiting=0
                 })
             });
         }else{
@@ -72,7 +103,8 @@ import {
 
     function scarica_qr(){
         f7.dialog.confirm("Confermi di voler scaricare il qrcode ?", () => {
-            genera_qrcode(filedata).then(qrcode=>{
+            var qrcode = response.qrcode
+            if(qrcode){
                 const byteCharacters = atob(qrcode);
                 const byteNumbers = new Array(byteCharacters.length);
                 for (let i = 0; i < byteCharacters.length; i++) {
@@ -81,8 +113,10 @@ import {
                 const byteArray = new Uint8Array(byteNumbers);
                 var contentType = "image/png"
                 const blob = new Blob([byteArray], {type: contentType});
-                saveAs(blob, "QR_hardware_"+hardware.id+".png");
-            })
+                saveAs(blob, filedata.title+".png");
+            }else{
+                f7.dialog.alert("QrCode non valido")
+            }
         });
     }
 
@@ -94,6 +128,11 @@ import {
     <!-- Top Navbar -->
     <Navbar>
       <NavTitle sliding>Genera QrCode</NavTitle>
+      <NavRight>
+        {#if logged}
+        <Link tabLink="#view-utente" iconMd="material:account_circle" text={JSON.parse(localStorage.getItem("user")).name} />
+        {/if}
+      </NavRight>
     </Navbar>
 
     {#if !logged}
@@ -124,6 +163,16 @@ import {
                     inputId="picker-tipo"
                 />
 
+                <ListInput
+                    outline
+                    floatingLabel
+                    type="text"
+                    placeholder="Stato del QrCode *"
+                    name="stato"
+                    label="Stato del QrCode *"
+                    inputId="picker-stato"
+                />
+
                 <br>
 
                 {#if filedata.type=="testo"}
@@ -132,7 +181,7 @@ import {
                         buttons={[
                         ['bold', 'italic', 'underline']
                         ]}
-                        bind:value={filedata.content}
+                        onTextEditorChange={(value)=>filedata.content=value}
                     />
                     <!-- <textarea bind:value={filedata.type} placeholder="Testo da immettere nel QrCode"></textarea> -->
                 {:else if filedata.type=="audio" || filedata.type=="immagine" || filedata.type=="video"}
@@ -152,8 +201,19 @@ import {
         </Block>
 
         <Block strong inset>
-            <div class="center">
+            <div class="center column">
                 <h2>QrCode</h2>
+                {#if !waiting}
+                    {#if response.qrcode}
+                        <br><br>
+                        <img class="qrcode" src={"data:image/png;base64,"+response.qrcode} alt="qrcode">
+                        <br>
+                        <Icon material="task_alt" color="green"/>  QrCode generato con successo  <br><br>
+                        <Button on:click={scarica_qr}><Icon material="cloud_download" title="scarica qrcode"/> Scarica QrCode</Button>
+                    {/if}
+                {:else}
+                    <div>Sto elaborando il QrCode</div>
+                {/if}
             </div>
         </Block>
     </div>

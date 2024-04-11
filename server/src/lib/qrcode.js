@@ -9,12 +9,12 @@ export async function generate_qrcode(user, filedata) {
         let qrcode_path
         let filepath = "files/"
 
-        const result = await db.execute('INSERT INTO qrcodes(`id_user`, `title`, `data`, `ora`, `stato`) VALUES (?, ?)', [user.id, filedata.title, data(), ora(), filedata.stato]);
+        const result = await db.execute('INSERT INTO qrcodes(`id_user`, `title`, `data`, `ora`, `stato`) VALUES (?, ?, ?, ?, ?)', [user.id, filedata.title, data(), ora(), filedata.stato]);
         const insertedId = result[0].insertId;
         qrcode_path = `qrcodes/qrcode_${insertedId}.png`
         filepath += `file_${insertedId}`
         
-        const qrcode_text = "https://qrcodes.rizzolo.cloud/api/get_qrcode/"+insertedId
+        const qrcode_text = "https://qrcode.rizzolo.cloud/api/get_qrcode/"+insertedId
         // crea il qrcode
         const qr_png = qrImage.imageSync(qrcode_text, { type: 'png' });
         fs.writeFileSync(qrcode_path, qr_png);
@@ -29,4 +29,18 @@ export async function generate_qrcode(user, filedata) {
         console.error('Error:', error);
         throw error; // Re-throw the error to handle it outside this function if needed
     }
+}
+
+export async function mine_qrcodes(id_user){
+    const result = await db.execute('SELECT * FROM qrcodes WHERE id_user=?', [id_user])
+    var qrcodes = result[0]
+    for(let i=0 ; i<qrcodes.length ; i++){
+        var file = "qrcodes/qrcode_"+qrcodes[i].id+".png"
+        if(fs.existsSync(file)){
+            qrcodes[i]['qrcode'] = fs.readFileSync(file).toString("base64")
+        }else{
+            qrcodes[i]['qrcode'] = ""
+        }
+    }
+    return qrcodes
 }

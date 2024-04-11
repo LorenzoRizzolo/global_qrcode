@@ -2,6 +2,11 @@
   <!-- Top Navbar -->
   <Navbar>
     <NavTitle sliding>PersonalQrCode</NavTitle>
+    <NavRight>
+      {#if logged}
+        <Link tabLink="#view-utente" iconMd="material:account_circle" text={JSON.parse(localStorage.getItem("user")).name} />
+      {/if}
+    </NavRight>
   </Navbar>
 
   {#if !logged}
@@ -24,6 +29,7 @@
     Link,
     Toolbar,
     Block,
+    Icon,
     BlockTitle,
     List,
     ListItem,

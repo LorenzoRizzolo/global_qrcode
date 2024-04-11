@@ -5,9 +5,9 @@
   <Views tabs class="safe-areas">
     <!-- Tabbar for switching views-tabs -->
     <Toolbar tabbar icons bottom>
-      <Link tabLink="#view-home" tabLinkActive iconMd="material:home" text="Home" />
-      <Link tabLink="#view-genera" iconMd="material:qr_code_2" text="Genera" />
-      <Link tabLink="#view-utente" iconMd="material:account_circle" text="Utente" />
+      <Link id="#view-home" tabLink="#view-home" tabLinkActive iconMd="material:home" text="Home" />
+      <Link id="#view-genera" tabLink="#view-genera" iconMd="material:qr_code_2" text="Genera" />
+      <Link id="#view-utente" tabLink="#view-utente" iconMd="material:account_circle" text="Utente" />
     </Toolbar>
 
     <View id="view-home" main tab tabActive url="/" />

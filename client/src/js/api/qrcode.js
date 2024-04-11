@@ -20,3 +20,23 @@ export function genera_qrcode(filedata){
             });
     });
 }
+
+export function get_mine_qrcodes() {
+    return new Promise((resolve, reject) => {
+        let token = localStorage.getItem("token");
+        fetch(url + "/get_mine_qrcodes", {
+                method: "POST",
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ token })
+            })
+            .then(response => response.json())
+            .then(data => {
+                resolve(data)
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
+  }

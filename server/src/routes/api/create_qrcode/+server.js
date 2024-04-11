@@ -16,13 +16,13 @@ export async function POST({ request }){
     try{
         var data = await request.json()
         if(await is_logged(data.token)){
-            var type = data.type
+            var type = data.filedata.type
             var user = await get_user_by_token(data.token)
             let qrcode = ""
             switch(type){
-                case 'text':
-                case 'url':
-                case 'number':
+                case 'testo':
+                case 'link':
+                case 'numero':
                     qrcode = await generate_qrcode(user, data.filedata);
                     break
                 default:
