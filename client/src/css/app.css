@@ -8,3 +8,43 @@
 .center.column{
   flex-direction: column;
 }
+
+::-webkit-scrollbar{
+  display: none;
+}
+* {
+  scrollbar-width: none; /* Set the scrollbar width */
+}
+*::-webkit-scrollbar {
+  width: 8px; /* Set the width of the scrollbar */
+  border-radius: 10px !important; /* Set the border radius for the scrollbar track */
+}
+*::-webkit-scrollbar-thumb {
+  background-color: var(--blue); /* Set the background color of the thumb */
+  border: 3px solid lightgray; /* Set the border of the thumb */
+  border-radius: 10px; /* Set the border radius for the thumb */
+}
+
+.html5-qrcode-element{
+  background-color: unset;
+  margin-top: 20px;
+  color: white;
+  border: 0;
+  font-size: 120%;
+}
+#html5-qrcode-anchor-scan-type-change{
+  display: none !important;
+}
+.reader_el{
+  border: 0 !important;
+}
+.reader_el select{
+  margin-top: 30px;
+  margin-bottom: 10px;
+  padding: 10px;
+  width: 100%;
+  border-radius: 10px;
+}
+.reader_el img{
+  display: none !important;
+}

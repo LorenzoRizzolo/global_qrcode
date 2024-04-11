@@ -10,7 +10,7 @@
   </Navbar>
 
   {#if !logged}
-      <Login/>
+      <!-- <Login bind:logged/> -->
   {/if}
 
   <Block strong inset>

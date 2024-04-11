@@ -40,3 +40,23 @@ export function get_mine_qrcodes() {
             });
     });
   }
+
+  export function get_qr_by_id(id) {
+    return new Promise((resolve, reject) => {
+        let token = localStorage.getItem("token");
+        fetch(url + "/get_qr_by_id", {
+                method: "POST",
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ token, id })
+            })
+            .then(response => response.json())
+            .then(data => {
+                resolve(data)
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
+  }

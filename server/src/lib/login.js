@@ -1,3 +1,4 @@
+import { constants } from "buffer";
 import db from "./db";
 import { generaToken } from "./functions";
 import { json } from "@sveltejs/kit";
@@ -24,6 +25,10 @@ export async function get_user_by_token(token){
 }
 
 export async function is_logged(token){
-    var exists = fs.existsSync("sessions/"+token)
-    return exists
+    if (token != null) {
+        var exists = fs.existsSync("sessions/" + token);
+        return exists;
+    } else {
+        return false; // Or handle it according to your logic
+    }
 }

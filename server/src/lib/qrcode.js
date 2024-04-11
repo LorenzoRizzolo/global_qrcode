@@ -14,7 +14,7 @@ export async function generate_qrcode(user, filedata) {
         qrcode_path = `qrcodes/qrcode_${insertedId}.png`
         filepath += `file_${insertedId}`
         
-        const qrcode_text = "https://qrcode.rizzolo.cloud/api/get_qrcode/"+insertedId
+        const qrcode_text = "https://qrcode.rizzolo.cloud/scannerizza/"+insertedId
         // crea il qrcode
         const qr_png = qrImage.imageSync(qrcode_text, { type: 'png' });
         fs.writeFileSync(qrcode_path, qr_png);
@@ -43,4 +43,13 @@ export async function mine_qrcodes(id_user){
         }
     }
     return qrcodes
+}
+
+export async function get_qr_by_id(id_qr){
+    const result = await db.execute('SELECT * FROM qrcodes WHERE id=?', [id_qr])
+    var qrcode = result[0][0]
+    var file = "qrcodes/qrcode_"+id_qr+".png"
+    qrcode['qrcode'] = fs.readFileSync(file).toString("base64")
+    qrcode['file'] = JSON.parse(fs.readFileSync("files/file_"+id_qr))
+    return qrcode
 }

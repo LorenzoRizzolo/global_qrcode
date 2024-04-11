@@ -8,15 +8,32 @@
         Link, 
         Icon,
         ListInput,
-        List
+        List,
+
+        app
+
     } from "framework7-svelte";
 
     import { login } from "../js/api/login";
 
     let username, password
 
+    export let logged
+
     function accedi(){
-        login(username, password)
+        login(username, password).then(data=>{
+            if(data.code==100){
+              localStorage.setItem("token", data.token)
+              localStorage.setItem("user", JSON.stringify(data.user))
+              app.f7.popup.close()
+              logged=(data.code==100)
+              location.reload()
+            }else if(data.code=="101"){
+              app.f7.dialog.alert(data.details, "Login error")
+            }else{
+              app.f7.dialog.alert(data.details, "General error")
+            }
+        })
     }
 
 </script>

@@ -22,7 +22,6 @@ export async function POST({ request }){
             switch(type){
                 case 'testo':
                 case 'link':
-                case 'numero':
                     qrcode = await generate_qrcode(user, data.filedata);
                     break
                 default:

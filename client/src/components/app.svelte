@@ -8,11 +8,13 @@
       <Link id="#view-home" tabLink="#view-home" tabLinkActive iconMd="material:home" text="Home" />
       <Link id="#view-genera" tabLink="#view-genera" iconMd="material:qr_code_2" text="Genera" />
       <Link id="#view-utente" tabLink="#view-utente" iconMd="material:account_circle" text="Utente" />
+      <Link id="#view-scan" tabLink="#view-scan" iconMd="material:qr_code" text="Scannerizza" />
     </Toolbar>
 
     <View id="view-home" main tab tabActive url="/" />
     <View id="view-genera" name="genera" tab url="/genera/" />
     <View id="view-utente" name="utente" tab url="/utente/" />
+    <View id="view-scan" name="scan" tab url="/scanner/" />
 
   </Views>
 </App>

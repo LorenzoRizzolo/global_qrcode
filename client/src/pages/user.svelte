@@ -10,7 +10,7 @@
     </Navbar>
 
     {#if !logged}
-      <Login/>
+      <LoginPage/>
     {:else}
     <Block inset strong>
       <div class="center"><h1><Icon material="account_circle"/> {data.name}</h1></div>
@@ -22,8 +22,11 @@
         {:else if qrcodes.length}
             {#each qrcodes as qr}
               <Block>
-                <BlockTitle><Link on:click={()=>{scarica_qr(qr.qrcode, qr.title)}}><Icon material="cloud_download" title="scarica qrcode"/></Link> {qr.title}</BlockTitle>
-                {qr.stato} {qr.data} {qr.ora}
+                <BlockTitle>{qr.title}</BlockTitle>
+                  <Link on:click={()=>{}}><Icon material="edit" title="modifica qrcode"/></Link> 
+                  <Link on:click={()=>{scarica_qr(qr.qrcode, qr.title)}}><Icon material="cloud_download" title="scarica qrcode"/></Link> 
+                  <Link on:click={()=>{}}><Icon material="delete" color="red" title="elimina qrcode"/></Link> 
+                { qr.stato} {qr.data} {qr.ora}
               </Block>
             {/each}
         {:else}
@@ -52,7 +55,7 @@
       Button,
       f7
     } from 'framework7-svelte';
-    import Login from '../components/login.svelte';
+    import LoginPage from '../components/loginpage.svelte';
     import { is_logged, logout } from '../js/api/login';
 
     import { get_mine_qrcodes } from "../js/api/qrcode"
@@ -62,8 +65,10 @@
     var qrcodes = []
     var loading = false
     get_mine_qrcodes().then(data=>{ 
-        qrcodes=data.list 
-        qrcodes = qrcodes.reverse()
+        qrcodes=data.list
+        if(qrcodes){
+          qrcodes = qrcodes.reverse()
+        }
         loading=true 
     })
 
@@ -73,7 +78,9 @@
         var loading = false
         get_mine_qrcodes().then(data=>{ 
           qrcodes=data.list 
-          qrcodes = qrcodes.reverse()
+          if(qrcodes){
+            qrcodes = qrcodes.reverse()
+          }
           loading=true 
           done()
         })
@@ -102,7 +109,7 @@
     }
 
     var logged = false
-    is_logged(localStorage.getItem("token")).then(res=>{ 
+    is_logged(localStorage.getItem("token")).then(res=>{
       logged = res==100 
     })
 

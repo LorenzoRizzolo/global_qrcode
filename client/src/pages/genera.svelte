@@ -22,7 +22,6 @@ import {
     let tipologie = [
         "testo",
         "link",
-        "numero",
         "video",
         "immagine",
         "audio",
@@ -136,7 +135,12 @@ import {
     </Navbar>
 
     {#if !logged}
-        <Login/>
+        <Block inset strong>
+            <div class="center">
+                <Link tabLink="#view-utente" iconMd="material:account_circle" >Accedi alla tua area utente prima di creare il QrCode</Link>
+            </div>
+        </Block>
+        <!-- <Login bind:logged/> -->
     {/if}
 
     <div class="flex">
@@ -197,6 +201,8 @@ import {
 
             {#if logged}
                 <Button on:click={genera_qr} class={"my_button"} fill>Crea QrCode</Button>
+            {:else}
+                <div class="center">Accedi per poter generare il QrCode</div>
             {/if}
         </Block>
 
