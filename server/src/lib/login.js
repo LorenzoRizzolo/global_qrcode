@@ -2,7 +2,7 @@ import { constants } from "buffer";
 import db from "./db";
 import { generaToken } from "./functions";
 import { json } from "@sveltejs/kit";
-import fs from 'fs'
+import fs, { existsSync } from 'fs'
 
 export async function login(username, password){
     const result = await db.execute('SELECT * FROM users WHERE username=? and password=?', [username, password])
@@ -26,9 +26,9 @@ export async function get_user_by_token(token){
 
 export async function is_logged(token){
     if (token != null) {
-        var exists = fs.existsSync("sessions/" + token);
-        return exists;
+        let exists = fs.existsSync("sessions/" + token);
+        return exists
     } else {
-        return false; // Or handle it according to your logic
+        return false;
     }
 }
