@@ -13,14 +13,17 @@
     f7
     } from "framework7-svelte";
     import { update_qr } from "../js/api/qrcode"
+    import { qrcodes } from "../js/store";
 
-    export let qr
+    // export let qr
+    export let k
+    let start_qr = JSON.parse(JSON.stringify($qrcodes[k]));
 
     let loading = false
     function update_qrcode(){
         loading = true
-        update_qr(qr.id, qr.stato).then(data=>{
-            qr=data.qrcode
+        update_qr($qrcodes[k].id, $qrcodes[k].stato, $qrcodes[k].title).then(data=>{
+            $qrcodes[k]=data.qrcode
             loading=false
             f7.popup.close()
         })
@@ -29,8 +32,8 @@
     let picker_stato
     function onPopupOpen() {
         picker_stato = f7.picker.create({
-            inputEl: "#picker-stato-"+qr.id,
-            value: [qr.stato],
+            inputEl: "#picker-stato-"+$qrcodes[k].id,
+            value: [$qrcodes[k].stato],
             cols: [
                 {
                     textAlign: 'center',
@@ -39,20 +42,24 @@
             ],
             on: {
                 change(picker, values) {
-                    qr.stato = values[0]
+                    $qrcodes[k].stato = values[0]
                 }
             }
         });
     }
     
     function onPopupClose(){
+        if(!$qrcodes[k].title){
+            $qrcodes[k].title = start_qr.title
+
+        }
         picker_stato.destroy()
     }
 </script>
 
-<Link popupOpen={".update-qr-"+qr.id}><Icon material="edit" title="modifica qrcode"/></Link> 
+<Link popupOpen={".update-qr-"+$qrcodes[k].id}><Icon material="edit" title="modifica qrcode"/></Link> 
 
-<Popup {onPopupOpen} {onPopupClose} push class={"update-qr-"+qr.id}>
+<Popup {onPopupOpen} {onPopupClose} push class={"update-qr-"+$qrcodes[k].id}>
     <Page>
       <Navbar title={"Aggiorna QrCode"} large transparent>
         <NavRight>
@@ -67,11 +74,21 @@
                 <ListInput
                     outline
                     floatingLabel
+                    label="Titolo QrCode *"
+                    type="text"
+                    placeholder="Titolo QrCode *"
+                    on:load:value={$qrcodes[k].title}
+                    bind:value={$qrcodes[k].title}
+                    clearButton
+                />
+                <ListInput
+                    outline
+                    floatingLabel
                     type="text"
                     placeholder="Stato del QrCode *"
                     name="stato"
                     label="Stato del QrCode *"
-                    inputId={"picker-stato-"+qr.id}
+                    inputId={"picker-stato-"+$qrcodes[k].id}
                 />
             {:else}
                 <Block inset strong>Caricamento...</Block>

@@ -18,10 +18,10 @@
       <Block class="search-list" inset strong>
           {#if $qrcodes}
             {#if $qrcodes.length}
-              {#each $qrcodes as qr}
+              {#each Object.entries($qrcodes) as [k, qr]}
                 <Block class="item-search">
                   <BlockTitle>{qr.title}</BlockTitle>
-                    <UpdateQr {qr}/>
+                    <UpdateQr {k} />
                     <Link on:click={()=>{scarica_qr(qr.qrcode, qr.title)}}><Icon material="qr_code" title="scarica qrcode"/></Link> 
                     <Link on:click={()=>{scarica_contenuto(qr)}}><Icon material="download" title={"scarica "+qr.type}/></Link> 
                     <Link on:click={()=>{delete_qr(qr.id)}}><Icon material="delete" color="red" title="elimina qrcode"/></Link> 

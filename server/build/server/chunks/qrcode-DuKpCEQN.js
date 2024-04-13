@@ -57,12 +57,12 @@ async function delete_qrcode(id_qr) {
   await db2.end();
   return true;
 }
-async function update_qrcode(id_qr, stato) {
+async function update_qrcode(id_qr, stato, title) {
   let db2 = await createConnection();
-  await db2.execute("UPDATE qrcodes SET stato=? WHERE id=?", [stato, id_qr]);
+  await db2.execute("UPDATE qrcodes SET stato=?, title=? WHERE id=?", [stato, title, id_qr]);
   await db2.end();
   return true;
 }
 
 export { get_qr_by_id as a, delete_qrcode as d, generate_qrcode as g, mine_qrcodes as m, update_qrcode as u };
-//# sourceMappingURL=qrcode-BGVhaqWH.js.map
+//# sourceMappingURL=qrcode-DuKpCEQN.js.map

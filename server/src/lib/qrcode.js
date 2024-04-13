@@ -69,9 +69,9 @@ export async function delete_qrcode(id_qr){
     return true
 }
 
-export async function update_qrcode(id_qr, stato){
+export async function update_qrcode(id_qr, stato, title){   
     let db = await createConnection();
-    await db.execute('UPDATE qrcodes SET stato=? WHERE id=?', [stato, id_qr])
+    await db.execute('UPDATE qrcodes SET stato=?, title=? WHERE id=?', [stato, title, id_qr])
     await db.end()
     return true
 }

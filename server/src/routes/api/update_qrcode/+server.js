@@ -1,6 +1,6 @@
 import { json } from "@sveltejs/kit";
 import { is_logged, get_user_by_token } from "../../../lib/login";
-import { get_qr_by_id, mine_qrcodes, update_qrcode } from "../../../lib/qrcode";
+import { get_qr_by_id, update_qrcode } from "../../../lib/qrcode";
 
 export async function POST({ request }){
     try{
@@ -9,7 +9,7 @@ export async function POST({ request }){
         if(await is_logged(data.token)){
             var user = await get_user_by_token(data.token)
             if(qrcode.id_user==user.id){
-                update_qrcode(data.id, data.stato)
+                update_qrcode(data.id, data.stato, data.title)
                 qrcode = await get_qr_by_id(data.id)
                 return json({code:100, request:"ok", qrcode});
             }

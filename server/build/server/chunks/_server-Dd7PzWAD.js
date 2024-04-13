@@ -1,6 +1,6 @@
 import { j as json } from './index-BIAFQWR9.js';
 import { i as is_logged, g as get_user_by_token } from './login-bhoIVw_g.js';
-import { a as get_qr_by_id, u as update_qrcode } from './qrcode-BGVhaqWH.js';
+import { a as get_qr_by_id } from './qrcode-DuKpCEQN.js';
 import 'fs';
 import 'dotenv';
 import 'mysql2/promise';
@@ -12,12 +12,12 @@ async function POST({ request }) {
     var qrcode = await get_qr_by_id(data.id);
     if (await is_logged(data.token)) {
       var user = await get_user_by_token(data.token);
-      if (qrcode.id_user == user.id) {
-        update_qrcode(data.id, data.stato);
-        qrcode = await get_qr_by_id(data.id);
+      if (qrcode.id_user == user.id || qrcode.stato == "pubblico") {
         return json({ code: 100, request: "ok", qrcode });
       }
-      return json({ code: 101, request: "ko", detail: "Non hai i permessi per eliminare il QrCode" });
+      return json({ code: 101, request: "ko", detail: "Non hai i permessi per visuaizzare il QrCode" });
+    } else if (qrcode.stato == "pubblico") {
+      return json({ code: 100, request: "ok", qrcode });
     } else {
       return json({ code: 1, request: "ko", detail: "user isn't logged" });
     }
@@ -28,4 +28,4 @@ async function POST({ request }) {
 }
 
 export { POST };
-//# sourceMappingURL=_server-BnlnB5ea.js.map
+//# sourceMappingURL=_server-Dd7PzWAD.js.map

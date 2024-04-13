@@ -81,7 +81,7 @@ export function get_mine_qrcodes() {
     });
   }
 
-  export function update_qr(id, stato) {
+  export function update_qr(id, stato, title) {
     return new Promise((resolve, reject) => {
         let token = localStorage.getItem("token");
         fetch(url + "/update_qrcode", {
@@ -89,7 +89,7 @@ export function get_mine_qrcodes() {
                 headers: {
                   'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ token, id, stato })
+                body: JSON.stringify({ token, id, stato, title })
             })
             .then(response => response.json())
             .then(data => {
