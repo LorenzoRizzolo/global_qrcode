@@ -4,7 +4,7 @@
       <NavTitle>Pagina utente</NavTitle>
       <NavRight>
         {#if $logged}
-          <Link tabLink="#view-utente" iconMd="material:account_circle" text={JSON.parse(localStorage.getItem("user")).name} />
+          <Link tabLink="#view-utente" iconMd="material:account_circle" text={$user_data.name} />
         {/if}
       </NavRight>
     </Navbar>
@@ -16,19 +16,21 @@
         <div class="center"><h1><Icon material="account_circle"/> {$user_data.name}</h1></div>
       </Block>
       <Block class="search-list" inset strong>
-          {#if $qrcodes.length}
-            {#each $qrcodes as qr}
-              <Block class="item-search">
-                <BlockTitle>{qr.title}</BlockTitle>
-                  <UpdateQr {qr}/>
-                  <Link on:click={()=>{scarica_qr(qr.qrcode, qr.title)}}><Icon material="qr_code" title="scarica qrcode"/></Link> 
-                  <Link on:click={()=>{scarica_contenuto(qr)}}><Icon material="download" title={"scarica "+qr.type}/></Link> 
-                  <Link on:click={()=>{delete_qr(qr.id)}}><Icon material="delete" color="red" title="elimina qrcode"/></Link> 
-                { qr.stato} {qr.file.type} {qr.data} {qr.ora}
-              </Block>
-            {/each}
-          {:else}
-              <div>Nessun QrCode Trovato</div>
+          {#if $qrcodes}
+            {#if $qrcodes.length}
+              {#each $qrcodes as qr}
+                <Block class="item-search">
+                  <BlockTitle>{qr.title}</BlockTitle>
+                    <UpdateQr {qr}/>
+                    <Link on:click={()=>{scarica_qr(qr.qrcode, qr.title)}}><Icon material="qr_code" title="scarica qrcode"/></Link> 
+                    <Link on:click={()=>{scarica_contenuto(qr)}}><Icon material="download" title={"scarica "+qr.type}/></Link> 
+                    <Link on:click={()=>{delete_qr(qr.id)}}><Icon material="delete" color="red" title="elimina qrcode"/></Link> 
+                  { qr.stato} {qr.file.type} {qr.data} {qr.ora}
+                </Block>
+              {/each}
+            {:else}
+                <div>Nessun QrCode Trovato</div>
+            {/if}
           {/if}
       </Block>
     {/if}
@@ -77,7 +79,6 @@
           if($qrcodes){
             $qrcodes = $qrcodes.reverse()
           }
-          console.log($qrcodes)
           loading=true 
           done()
         })
