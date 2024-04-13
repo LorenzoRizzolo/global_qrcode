@@ -3,39 +3,39 @@
     <Navbar>
       <NavTitle>Pagina utente</NavTitle>
       <NavRight>
-        {#if logged}
+        {#if $logged}
           <Link tabLink="#view-utente" iconMd="material:account_circle" text={JSON.parse(localStorage.getItem("user")).name} />
         {/if}
       </NavRight>
     </Navbar>
 
-    {#if !logged}
+    {#if !$logged}
       <LoginPage/>
     {:else}
-    <Block inset strong>
-      <div class="center"><h1><Icon material="account_circle"/> {data.name}</h1></div>
-    </Block>
-    
-    <Block inset strong>
-        {#if !loading}
-            caricamento...
-        {:else if qrcodes.length}
-            {#each qrcodes as qr}
-              <Block>
-                <BlockTitle>{qr.title}</BlockTitle>
-                  <Link on:click={()=>{}}><Icon material="edit" title="modifica qrcode"/></Link> 
-                  <Link on:click={()=>{scarica_qr(qr.qrcode, qr.title)}}><Icon material="cloud_download" title="scarica qrcode"/></Link> 
-                  <Link on:click={()=>{}}><Icon material="delete" color="red" title="elimina qrcode"/></Link> 
-                { qr.stato} {qr.data} {qr.ora}
-              </Block>
-            {/each}
-        {:else}
-            <div>Nessun QrCode Trovato</div>
-        {/if}
-    </Block>
+      <Block inset strong>
+        <div class="center"><h1><Icon material="account_circle"/> {data.name}</h1></div>
+      </Block>
+      <Block class="search-list" inset strong>
+          {#if !loading}
+              caricamento...
+          {:else if qrcodes.length}
+              {#each qrcodes as qr}
+                <Block class="item-search">
+                  <BlockTitle>{qr.title}</BlockTitle>
+                    <UpdateQr {qr}/>
+                    <Link on:click={()=>{scarica_qr(qr.qrcode, qr.title)}}><Icon material="qr_code" title="scarica qrcode"/></Link> 
+                    <Link on:click={()=>{scarica_contenuto(qr)}}><Icon material="download" title={"scarica "+qr.type}/></Link> 
+                    <Link on:click={()=>{delete_qr(qr.id)}}><Icon material="delete" color="red" title="elimina qrcode"/></Link> 
+                  { qr.stato} {qr.file.type} {qr.data} {qr.ora}
+                </Block>
+              {/each}
+          {:else}
+              <div>Nessun QrCode Trovato</div>
+          {/if}
+      </Block>
     {/if}
 
-    {#if logged}
+    {#if $logged}
       <Block inset strong>
         <Button color="red" on:click={logout}>Esci</Button>
       </Block>
@@ -53,17 +53,23 @@
       BlockTitle,
       Icon,
       Button,
-      f7
+      f7,
+      Subnavbar,
+      Searchbar,
+      app
+
     } from 'framework7-svelte';
     import LoginPage from '../components/loginpage.svelte';
+    import UpdateQr from '../components/update_qr.svelte';
     import { is_logged, logout } from '../js/api/login';
+    import { logged, user_data } from '../js/store';
 
-    import { get_mine_qrcodes } from "../js/api/qrcode"
+    import { get_mine_qrcodes, delete_qrcode } from "../js/api/qrcode"
 
-    let data = JSON.parse(localStorage.getItem("user"))
+    let data = $user_data
 
-    var qrcodes = []
-    var loading = false
+    let qrcodes = []
+    let loading = false
     get_mine_qrcodes().then(data=>{ 
         qrcodes=data.list
         if(qrcodes){
@@ -74,8 +80,8 @@
 
     function reload(done){
       qrcodes = []
-      if(logged){
-        var loading = false
+      if($logged){
+        loading = false
         get_mine_qrcodes().then(data=>{ 
           qrcodes=data.list 
           if(qrcodes){
@@ -89,6 +95,31 @@
       }
     }
 
+    function delete_qr(id){
+      if($logged){
+        loading = false
+        f7.dialog.confirm(
+            "Vuoi eliminare il qrcode?",
+            () => {
+              qrcodes = []
+                delete_qrcode(id).then(data => {
+                    qrcodes = data.list;
+                    if (qrcodes) {
+                        qrcodes = qrcodes.reverse();
+                    }
+                    f7.dialog.alert("QrCode eliminato");
+                    loading = true;
+                });
+            },
+            () => {
+                loading=true
+                console.log("Operazione annullata");
+            },"Conferma eliminazione"
+        );
+      }else{
+        f7.dialog.alert("Non sei loggato")
+      }
+    }
 
     function scarica_qr(qrcode, name){
         f7.dialog.confirm("Confermi di voler scaricare il qrcode ?", () => {
@@ -108,10 +139,23 @@
         });
     }
 
-    var logged = false
-    is_logged(localStorage.getItem("token")).then(res=>{
-      logged = res==100 
-    })
+    function scarica_contenuto(qrcode){
+      console.log(qrcode);
+      const byteCharacters = atob(qrcode.file.content);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      // Non specificare esplicitamente il tipo di contenuto
+      const blob = new Blob([byteArray]);
+      saveAs(blob, qrcode.file.name + "." + qrcode.file.extension);
+    }
+
+    // var logged = false
+    // is_logged(localStorage.getItem("token")).then(res=>{
+    //   logged = res==100 
+    // })
 
     // function reload(done){
     //   setTimeout(() => {

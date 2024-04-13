@@ -24,6 +24,11 @@ export async function POST({ request }){
                 case 'link':
                     qrcode = await generate_qrcode(user, data.filedata);
                     break
+                case 'video':
+                case 'immagine':
+                case 'audio':
+                    qrcode = await generate_qrcode(user, data.filedata);
+                    break
                 default:
                     return json({code:100, request:"ko", detail:"Type of qrcode isn't valid"})
             }

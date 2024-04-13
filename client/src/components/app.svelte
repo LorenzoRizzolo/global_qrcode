@@ -12,7 +12,7 @@
     </Toolbar>
 
     <!-- <View id="view-home" main tab tabActive url="/" /> -->
-    <View id="view-genera" name="genera" tab tabActive main url="//" />
+    <View id="view-genera" name="genera" tab tabActive main url="/" />
     <View id="view-utente" name="utente" tab url="/utente/" />
     <View id="view-scan" name="scan" tab url="/scanner/" />
 

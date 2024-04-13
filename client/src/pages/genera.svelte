@@ -1,5 +1,6 @@
 <script>
     import { Button, app } from 'framework7-svelte';
+    import {logged, user_data} from "../js/store"
 import {
       Page,
       Navbar,
@@ -18,6 +19,18 @@ import {
     import Login from '../components/login.svelte';
     import { genera_qrcode } from "../js/api/qrcode"
     import { saveAs } from "file-saver"
+    import Dropzone from "svelte-file-dropzone";
+
+    let files = {
+        accepted: [],
+        rejected: []
+    };
+
+    function handleFilesSelect(e) {
+        const { acceptedFiles, fileRejections } = e.detail;
+        files.accepted = [...files.accepted, ...acceptedFiles];
+        files.rejected = [...files.rejected, ...fileRejections];
+    }
 
     let tipologie = [
         "testo",
@@ -93,10 +106,13 @@ import {
                 genera_qrcode(filedata).then(res=>{
                     response=res
                     waiting=0
+                    if(response.code!=100){
+                        f7.dialog.alert(response.detail)
+                    }
                 })
-            });
+            }, ()=>{}, "Genera QrCode");
         }else{
-            f7.dialog.alert("Compila tutti i campi")
+            f7.dialog.alert("Compila tutti i campi", "Error")
         }
     }
 
@@ -119,8 +135,33 @@ import {
         });
     }
 
-    var logged 
-    is_logged(localStorage.getItem("token")).then(res=>{ logged = res==100 })
+    function read_file(e){
+        const { acceptedFiles, fileRejections } = e.detail;
+        files.accepted = [...files.accepted, ...acceptedFiles];
+        files.rejected = [...files.rejected, ...fileRejections];
+        const file = files.accepted[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.addEventListener("load", function () {
+                image.setAttribute("src", reader.result);
+            });
+            reader.readAsDataURL(file);    
+            reader.onload = function () {
+                var result = reader.result.split("base64")[1].split(",")[1]
+                filedata.content = result
+                filedata.extension = file.name.split(".").at(-1)
+            };
+            return;
+        } 
+    }
+
+    is_logged(localStorage.getItem("token")).then(res=>{ $logged = res==100 })
+
+    
+    let input;
+    let image;
+    
+    let data = $user_data
   </script>
 
 <Page name="genera" {onPageInit} {onPageBeforeRemove}>
@@ -128,13 +169,13 @@ import {
     <Navbar>
       <NavTitle sliding>Genera QrCode</NavTitle>
       <NavRight>
-        {#if logged}
-        <Link tabLink="#view-utente" iconMd="material:account_circle" text={JSON.parse(localStorage.getItem("user")).name} />
+        {#if $logged}
+        <Link tabLink="#view-utente" iconMd="material:account_circle" text={data.name} />
         {/if}
       </NavRight>
     </Navbar>
 
-    {#if !logged}
+    {#if !$logged}
         <Block inset strong>
             <div class="center">
                 <Link tabLink="#view-utente" iconMd="material:account_circle" >Accedi alla tua area utente prima di creare il QrCode</Link>
@@ -179,7 +220,7 @@ import {
 
                 <br>
 
-                {#if filedata.type=="testo"}
+                {#if filedata.type=="testo" || filedata.type=="link"}
                     <TextEditor
                         placeholder="Inserisci il testo... *"
                         buttons={[
@@ -189,17 +230,28 @@ import {
                     />
                     <!-- <textarea bind:value={filedata.type} placeholder="Testo da immettere nel QrCode"></textarea> -->
                 {:else if filedata.type=="audio" || filedata.type=="immagine" || filedata.type=="video"}
-                    <div class="custom_file_upload">
+                    <!-- <div class="custom_file_upload">
                         <div class="file_upload">
-                            <input type="file" name="file">
+                            <input
+                                bind:this={input}
+                                on:change={read_file}
+                                type="file"
+                            />
                         </div>
-                    </div>
-                    <ul id="fileList"></ul>
+                    </div> -->
+                    <Dropzone on:drop={read_file} multiple={false}>
+                        Trascina qui il file o clicca qui per selezionarlo
+                    </Dropzone>
+                    {#if files.accepted.length}
+                        <div class="center">{files.accepted[0].name}</div>
+                    {/if}
+                    
+                    <img bind:this={image} src="" alt="Preview" style="display: none;" />
                 {/if}
 
             </List>
 
-            {#if logged}
+            {#if $logged}
                 <Button on:click={genera_qr} class={"my_button"} fill>Crea QrCode</Button>
             {:else}
                 <div class="center">Accedi per poter generare il QrCode</div>

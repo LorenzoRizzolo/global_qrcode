@@ -1,5 +1,6 @@
 
 import { createStore } from 'framework7/lite';
+import { writable } from 'svelte/store';
 
 const store = createStore({
   state: {
@@ -33,3 +34,6 @@ const store = createStore({
   },
 })
 export default store;
+
+export let logged = writable(false)
+export let user_data = writable(logged ? JSON.parse(localStorage.getItem("user")) : { username:"", password:"", email:"", name:""})

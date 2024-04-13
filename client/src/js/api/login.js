@@ -1,5 +1,6 @@
 import { app } from "framework7-svelte";
 import { url } from "../common";
+import { logged } from "../store";
 
 export function login(username, password){
     return new Promise((resolve, reject) => {
@@ -61,9 +62,9 @@ export function get_me() {
   }
 
 export function logout(){
-  console.log("logout")
   if(localStorage.getItem("token")){
     localStorage.clear()
-    location.reload()
+    // location.reload()
+    logged.set(false)
   }
 }

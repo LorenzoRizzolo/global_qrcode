@@ -15,10 +15,11 @@
     } from "framework7-svelte";
 
     import { login } from "../js/api/login";
+    import {logged} from "../js/store"
 
     let username, password
 
-    export let logged
+    // export let logged
 
     function accedi(){
         login(username, password).then(data=>{
@@ -26,8 +27,8 @@
               localStorage.setItem("token", data.token)
               localStorage.setItem("user", JSON.stringify(data.user))
               app.f7.popup.close()
-              logged=(data.code==100)
-              location.reload()
+              $logged=(data.code==100)
+              // location.reload()
             }else if(data.code=="101"){
               app.f7.dialog.alert(data.details, "Login error")
             }else{
