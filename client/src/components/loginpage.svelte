@@ -15,7 +15,8 @@
     } from "framework7-svelte";
 
     import { login } from "../js/api/login";
-    import {logged} from "../js/store"
+    import { get_mine_qrcodes } from "../js/api/qrcode";
+    import { logged, user_data, qrcodes } from "../js/store"
     import Registrati from "./registrati.svelte";
 
     let username, password
@@ -27,13 +28,19 @@
             if(data.code==100){
               localStorage.setItem("token", data.token)
               localStorage.setItem("user", JSON.stringify(data.user))
-              app.f7.popup.close()
+              $user_data = data.user
               $logged=(data.code==100)
-              // location.reload()
+              get_mine_qrcodes().then(data=>{ 
+                $qrcodes=data.list
+                if($qrcodes){
+                  $qrcodes = $qrcodes.reverse()
+                }
+              })
+              app.f7.popup.close()
             }else if(data.code=="101"){
-              app.f7.dialog.alert(data.details, "Login error")
+              app.f7.dialog.alert(data.detail, "Errore")
             }else{
-              app.f7.dialog.alert(data.details, "General error")
+              app.f7.dialog.alert(data.detail, "Errore generale")
             }
         })
     }

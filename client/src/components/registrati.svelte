@@ -10,14 +10,17 @@
         ListInput,
         List,
 
-        app
+        app,
+
+        f7
+
 
     } from "framework7-svelte";
 
-    import { login } from "../js/api/login";
-    import {logged} from "../js/store"
+    import { login, signin } from "../js/api/login";
+    import {logged, user_data} from "../js/store"
 
-    let user_data = {
+    let data_user = {
         username:"", 
         password:"",
         name:"", 
@@ -27,7 +30,25 @@
     // export let logged
 
     function registrati(){
-        // console.log(user_data)
+        if(data_user.username && data_user.password && data_user.name && data_user.email){
+            signin(data_user.username, data_user.password, data_user.name, data_user.email).then(data=>{
+                // console.log(data)
+                if(data.code==100){
+                    localStorage.setItem("user", JSON.stringify(data.user))
+                    localStorage.setItem("token", data.token)
+                    $user_data = data.user
+                    // console.log($user_data)
+                    $logged=true
+                    app.f7.popup.close()
+                }else if(data.code=="101"){
+                    app.f7.dialog.alert(data.details, "Errore")
+                }else{
+                    app.f7.dialog.alert(data.details, "Errore generale")
+                }
+            })
+        }else{
+            f7.dialog.alert("Compila tutti i campi")
+        }
     }
 
 </script>
@@ -52,8 +73,8 @@
                 label="username"
                 type="text"
                 placeholder="Username"
-                on:load:value={user_data.username}
-                bind:value={user_data.username}
+                on:load:value={data_user.username}
+                bind:value={data_user.username}
                 clearButton
             />
 
@@ -63,8 +84,8 @@
                 label="Password"
                 type="password"
                 placeholder="Password"
-                on:load:value={user_data.password}
-                bind:value={user_data.password}
+                on:load:value={data_user.password}
+                bind:value={data_user.password}
                 clearButton
             />
 
@@ -74,8 +95,8 @@
                 label="Nome Cognome"
                 type="text"
                 placeholder="Nome Cognome"
-                on:load:value={user_data.name}
-                bind:value={user_data.name}
+                on:load:value={data_user.name}
+                bind:value={data_user.name}
                 clearButton
             />
 
@@ -85,8 +106,8 @@
                 label="Email"
                 type="email"
                 placeholder="Email"
-                on:load:value={user_data.email}
-                bind:value={user_data.email}
+                on:load:value={data_user.email}
+                bind:value={data_user.email}
                 clearButton
             />
 

@@ -1,6 +1,7 @@
 import { app } from "framework7-svelte";
 import { url } from "../common";
-import { logged } from "../store";
+import { logged, user_data, qrcodes } from "../store";
+import { get_mine_qrcodes } from "./qrcode"
 
 export function login(username, password){
     return new Promise((resolve, reject) => {
@@ -67,4 +68,23 @@ export function logout(){
     // location.reload()
     logged.set(false)
   }
+}
+
+export function signin(username, password, name, email){
+  return new Promise((resolve, reject) => {
+    fetch(url+"/registrati", {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({username, password, name, email})
+    })
+    .then(response => response.json())
+    .then(data => {
+        resolve(data)
+    })
+    .catch(error => {
+        reject(error);
+    });
+  });
 }

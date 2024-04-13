@@ -13,22 +13,20 @@
       <LoginPage/>
     {:else}
       <Block inset strong>
-        <div class="center"><h1><Icon material="account_circle"/> {data.name}</h1></div>
+        <div class="center"><h1><Icon material="account_circle"/> {$user_data.name}</h1></div>
       </Block>
       <Block class="search-list" inset strong>
-          {#if !loading}
-              caricamento...
-          {:else if qrcodes.length}
-              {#each qrcodes as qr}
-                <Block class="item-search">
-                  <BlockTitle>{qr.title}</BlockTitle>
-                    <UpdateQr {qr}/>
-                    <Link on:click={()=>{scarica_qr(qr.qrcode, qr.title)}}><Icon material="qr_code" title="scarica qrcode"/></Link> 
-                    <Link on:click={()=>{scarica_contenuto(qr)}}><Icon material="download" title={"scarica "+qr.type}/></Link> 
-                    <Link on:click={()=>{delete_qr(qr.id)}}><Icon material="delete" color="red" title="elimina qrcode"/></Link> 
-                  { qr.stato} {qr.file.type} {qr.data} {qr.ora}
-                </Block>
-              {/each}
+          {#if $qrcodes.length}
+            {#each $qrcodes as qr}
+              <Block class="item-search">
+                <BlockTitle>{qr.title}</BlockTitle>
+                  <UpdateQr {qr}/>
+                  <Link on:click={()=>{scarica_qr(qr.qrcode, qr.title)}}><Icon material="qr_code" title="scarica qrcode"/></Link> 
+                  <Link on:click={()=>{scarica_contenuto(qr)}}><Icon material="download" title={"scarica "+qr.type}/></Link> 
+                  <Link on:click={()=>{delete_qr(qr.id)}}><Icon material="delete" color="red" title="elimina qrcode"/></Link> 
+                { qr.stato} {qr.file.type} {qr.data} {qr.ora}
+              </Block>
+            {/each}
           {:else}
               <div>Nessun QrCode Trovato</div>
           {/if}
@@ -62,31 +60,24 @@
     import LoginPage from '../components/loginpage.svelte';
     import UpdateQr from '../components/update_qr.svelte';
     import { is_logged, logout } from '../js/api/login';
-    import { logged, user_data } from '../js/store';
+    import { logged, user_data, qrcodes } from '../js/store';
 
     import { get_mine_qrcodes, delete_qrcode } from "../js/api/qrcode"
 
     let data = $user_data
 
-    let qrcodes = []
     let loading = false
-    get_mine_qrcodes().then(data=>{ 
-        qrcodes=data.list
-        if(qrcodes){
-          qrcodes = qrcodes.reverse()
-        }
-        loading=true 
-    })
 
     function reload(done){
-      qrcodes = []
+      $qrcodes = []
       if($logged){
         loading = false
         get_mine_qrcodes().then(data=>{ 
-          qrcodes=data.list 
-          if(qrcodes){
-            qrcodes = qrcodes.reverse()
+          $qrcodes=data.list 
+          if($qrcodes){
+            $qrcodes = $qrcodes.reverse()
           }
+          console.log($qrcodes)
           loading=true 
           done()
         })
@@ -101,11 +92,11 @@
         f7.dialog.confirm(
             "Vuoi eliminare il qrcode?",
             () => {
-              qrcodes = []
+              $qrcodes = []
                 delete_qrcode(id).then(data => {
-                    qrcodes = data.list;
-                    if (qrcodes) {
-                        qrcodes = qrcodes.reverse();
+                    $qrcodes = data.list;
+                    if ($qrcodes) {
+                        $qrcodes = $qrcodes.reverse();
                     }
                     f7.dialog.alert("QrCode eliminato");
                     loading = true;
@@ -113,7 +104,6 @@
             },
             () => {
                 loading=true
-                console.log("Operazione annullata");
             },"Conferma eliminazione"
         );
       }else{
@@ -140,7 +130,6 @@
     }
 
     function scarica_contenuto(qrcode){
-      console.log(qrcode);
       const byteCharacters = atob(qrcode.file.content);
       const byteNumbers = new Array(byteCharacters.length);
       for (let i = 0; i < byteCharacters.length; i++) {

@@ -1,4 +1,4 @@
-import { generate_qrcode } from "../../../lib/qrcode";
+import { generate_qrcode, mine_qrcodes } from "../../../lib/qrcode";
 import { json } from "@sveltejs/kit";
 import { is_logged, get_user_by_token } from "../../../lib/login";
 
@@ -32,7 +32,8 @@ export async function POST({ request }){
                 default:
                     return json({code:100, request:"ko", detail:"Type of qrcode isn't valid"})
             }
-            return json({code:100, request:"ok", qrcode})
+            var qrcodes = await mine_qrcodes(user.id)
+            return json({code:100, request:"ok", qrcode, qrcodes})
         }else{
             return json({code:1, request:"ko", detail:"user isn't logged"})
         }

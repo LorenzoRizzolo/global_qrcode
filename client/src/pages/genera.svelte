@@ -1,6 +1,6 @@
 <script>
     import { Button, app } from 'framework7-svelte';
-    import {logged, user_data} from "../js/store"
+    import {logged, user_data, qrcodes} from "../js/store"
 import {
       Page,
       Navbar,
@@ -16,8 +16,7 @@ import {
     } from 'framework7-svelte';
 
     import { is_logged } from "../js/api/login"
-    import Login from '../components/login.svelte';
-    import { genera_qrcode } from "../js/api/qrcode"
+    import { genera_qrcode, get_mine_qrcodes } from "../js/api/qrcode"
     import { saveAs } from "file-saver"
     import Dropzone from "svelte-file-dropzone";
 
@@ -105,6 +104,7 @@ import {
                 waiting=1
                 genera_qrcode(filedata).then(res=>{
                     response=res
+                    $qrcodes = response.qrcodes
                     waiting=0
                     if(response.code!=100){
                         f7.dialog.alert(response.detail)
@@ -156,6 +156,12 @@ import {
     }
 
     is_logged(localStorage.getItem("token")).then(res=>{ $logged = res==100 })
+    get_mine_qrcodes().then(data=>{ 
+        $qrcodes=data.list
+        if($qrcodes){
+          $qrcodes = $qrcodes.reverse()
+        }
+      })
 
     
     let input;
@@ -170,7 +176,7 @@ import {
       <NavTitle sliding>Genera QrCode</NavTitle>
       <NavRight>
         {#if $logged}
-        <Link tabLink="#view-utente" iconMd="material:account_circle" text={data.name} />
+        <Link tabLink="#view-utente" iconMd="material:account_circle" text={$user_data.name} />
         {/if}
       </NavRight>
     </Navbar>

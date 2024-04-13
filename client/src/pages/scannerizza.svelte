@@ -30,7 +30,6 @@
             <BlockTitle>Dati dalla scannerizzazione</BlockTitle>
             {#if me.id==data.qrcode.id_user}
               <b>Titolo:</b> {data.qrcode.title} <br><br>
-              {console.log(data.qrcode)}
               <UpdateQr qr={data.qrcode}/>
               <Link on:click={()=>{scarica_qr(data.qrcode.qrcode, data.qrcode.title)}}><Icon material="qr_code" title="scarica qrcode"/></Link> 
               <Link on:click={()=>{scarica_contenuto(data.qrcode)}}><Icon material="download" title={"scarica "+data.qrcode.type}/></Link> 
@@ -99,7 +98,6 @@
 
     import UpdateQr from '../components/update_qr.svelte';
   
-    import Login from '../components/login.svelte';
     import { is_logged, get_me } from '../js/api/login';
     import Scanner from "../components/scanner.svelte";
     import { logged, user_data } from '../js/store';
@@ -124,7 +122,7 @@
     }
 
     function scarica_contenuto(qrcode){
-      console.log(qrcode);
+      // console.log(qrcode);
       const byteCharacters = atob(qrcode.file.content);
       const byteNumbers = new Array(byteCharacters.length);
       for (let i = 0; i < byteCharacters.length; i++) {
