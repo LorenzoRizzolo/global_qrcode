@@ -139,7 +139,7 @@
       const byteArray = new Uint8Array(byteNumbers);
       // Non specificare esplicitamente il tipo di contenuto
       const blob = new Blob([byteArray]);
-      saveAs(blob, qrcode.file.name + "." + qrcode.file.extension);
+      saveAs(blob, qrcode.title + "." + qrcode.file.extension);
     }
 
     // var logged = false
