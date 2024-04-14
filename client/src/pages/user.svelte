@@ -131,7 +131,6 @@
     }
 
     function scarica_contenuto(qrcode){
-      console.log(qrcode.title)
       const byteCharacters = atob(qrcode.file.content);
       const byteNumbers = new Array(byteCharacters.length);
       for (let i = 0; i < byteCharacters.length; i++) {

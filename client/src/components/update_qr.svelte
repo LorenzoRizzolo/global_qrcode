@@ -23,7 +23,6 @@
     function update_qrcode(){
         loading = true
         update_qr($qrcodes[k].id, $qrcodes[k].stato, $qrcodes[k].title).then(data=>{
-            $qrcodes[k]=data.qrcode
             loading=false
             f7.popup.close()
         })
@@ -49,9 +48,9 @@
     }
     
     function onPopupClose(){
+        console.log($qrcodes[k].title)
         if(!$qrcodes[k].title){
             $qrcodes[k].title = start_qr.title
-
         }
         picker_stato.destroy()
     }
