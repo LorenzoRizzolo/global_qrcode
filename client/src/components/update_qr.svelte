@@ -56,44 +56,46 @@
         picker_stato.destroy()
     }
 </script>
+{#if $qrcodes[k]}
+    
+    <Link popupOpen={".update-qr-"+$qrcodes[k].id}><Icon material="edit" title="modifica qrcode"/></Link> 
 
-<Link popupOpen={".update-qr-"+$qrcodes[k].id}><Icon material="edit" title="modifica qrcode"/></Link> 
-
-<Popup {onPopupOpen} {onPopupClose} push class={"update-qr-"+$qrcodes[k].id}>
-    <Page>
-      <Navbar title={"Aggiorna QrCode"} large transparent>
-        <NavRight>
-          <Link on:click={()=>{update_qrcode()}}><Icon material="save" color="green" /></Link>
-          <Link popupClose><Icon material="close" color="red" /></Link>
-        </NavRight>
-      </Navbar>
-      <Block>
-        <br><br>
-        <List>
-            {#if !loading}
-                <ListInput
-                    outline
-                    floatingLabel
-                    label="Titolo QrCode *"
-                    type="text"
-                    placeholder="Titolo QrCode *"
-                    on:load:value={$qrcodes[k].title}
-                    bind:value={$qrcodes[k].title}
-                    clearButton
-                />
-                <ListInput
-                    outline
-                    floatingLabel
-                    type="text"
-                    placeholder="Stato del QrCode *"
-                    name="stato"
-                    label="Stato del QrCode *"
-                    inputId={"picker-stato-"+$qrcodes[k].id}
-                />
-            {:else}
-                <Block inset strong>Caricamento...</Block>
-            {/if}
-        </List>
-      </Block>
-    </Page>
-</Popup>
+    <Popup {onPopupOpen} {onPopupClose} push class={"update-qr-"+$qrcodes[k].id}>
+        <Page>
+        <Navbar title={"Aggiorna QrCode"} large transparent>
+            <NavRight>
+            <Link on:click={()=>{update_qrcode()}}><Icon material="save" color="green" /></Link>
+            <Link popupClose><Icon material="close" color="red" /></Link>
+            </NavRight>
+        </Navbar>
+        <Block>
+            <br><br>
+            <List>
+                {#if !loading}
+                    <ListInput
+                        outline
+                        floatingLabel
+                        label="Titolo QrCode *"
+                        type="text"
+                        placeholder="Titolo QrCode *"
+                        on:load:value={$qrcodes[k].title}
+                        bind:value={$qrcodes[k].title}
+                        clearButton
+                    />
+                    <ListInput
+                        outline
+                        floatingLabel
+                        type="text"
+                        placeholder="Stato del QrCode *"
+                        name="stato"
+                        label="Stato del QrCode *"
+                        inputId={"picker-stato-"+$qrcodes[k].id}
+                    />
+                {:else}
+                    <Block inset strong>Caricamento...</Block>
+                {/if}
+            </List>
+        </Block>
+        </Page>
+    </Popup>
+{/if}
