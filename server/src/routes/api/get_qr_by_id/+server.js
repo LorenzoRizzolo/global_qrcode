@@ -10,6 +10,7 @@ export async function POST({ request }){
         if(await is_logged(data.token)){
             var user = await get_user_by_token(data.token)
             if(qrcode.id_user==user.id||qrcode.stato=="pubblico"){
+                console.log("got qrcode ", data.id)
                 return json({code:100, request:"ok", qrcode});
             }
             return json({code:101, request:"ko", detail:"Non hai i permessi per visuaizzare il QrCode"});

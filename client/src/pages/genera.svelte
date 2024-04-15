@@ -12,6 +12,7 @@ import {
       NavRight,
       Link,
       Icon,
+      Preloader,
       f7
     } from 'framework7-svelte';
 
@@ -277,6 +278,7 @@ import {
                     {/if}
                 {:else}
                     <div>Sto elaborando il QrCode</div>
+                    <Preloader/>
                 {/if}
             </div>
         </Block>

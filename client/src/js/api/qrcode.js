@@ -61,6 +61,46 @@ export function get_mine_qrcodes() {
     });
   }
 
+  export function get_content(id) {
+    return new Promise((resolve, reject) => {
+        let token = localStorage.getItem("token");
+        fetch(url + "/get_content", {
+                method: "POST",
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ token, id })
+            })
+            .then(response => response.json())
+            .then(data => {
+                resolve(data)
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
+  }
+
+  export function get_qrcode(id) {
+    return new Promise((resolve, reject) => {
+        let token = localStorage.getItem("token");
+        fetch(url + "/get_qrcode", {
+                method: "POST",
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ token, id })
+            })
+            .then(response => response.json())
+            .then(data => {
+                resolve(data)
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
+  }
+
   export function delete_qrcode(id) {
     return new Promise((resolve, reject) => {
         let token = localStorage.getItem("token");

@@ -40,9 +40,9 @@ export async function mine_qrcodes(id_user){
     for(let i=0 ; i<qrcodes.length ; i++){
         var file = "qrcodes/qrcode_"+qrcodes[i].id+".png"
         if(fs.existsSync(file)){
-            qrcodes[i]['qrcode'] = fs.readFileSync(file).toString("base64")
-            qrcodes[i]['file'] = JSON.parse(fs.readFileSync("files/file_"+qrcodes[i].id))
-            // qrcodes[i]['type'] = JSON.parse(fs.readFileSync("files/file_"+qrcodes[i].id)).type
+            // qrcodes[i]['qrcode'] = fs.readFileSync(file).toString("base64")
+            // qrcodes[i]['file'] = JSON.parse(fs.readFileSync("files/file_"+qrcodes[i].id))
+            qrcodes[i]['type'] = JSON.parse(fs.readFileSync("files/file_"+qrcodes[i].id)).type
         }else{
             qrcodes[i]['qrcode'] = ""
         }
