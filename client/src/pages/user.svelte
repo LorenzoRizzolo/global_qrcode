@@ -156,6 +156,12 @@
     }
 
     function scarica_contenuto(id){
+      let t = f7.toast.create({
+        text: "Scarico...",
+        icon:'<i class="material-icons">check</i>',
+        position: 'center',
+        closeTimeout: 2000,
+      }); t.open();
       get_content(id).then(data=>{
         if(data.code==100){
           if(data.file.type=="testo" || data.file.type=="link"){
