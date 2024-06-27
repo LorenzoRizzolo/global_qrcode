@@ -101,6 +101,12 @@ import {
     let waiting = 0
     function genera_qr(){
         if(filedata.content){
+            let t = f7.toast.create({
+                text: "QrCode creato, caricamento...",
+                icon:'<i class="material-icons">check</i>',
+                position: 'center',
+                closeTimeout: 2000,
+            }); t.open();
             if(filedata.title==default_title){ filedata.title="QrCode anonimo" }
             f7.dialog.confirm("Confermi di voler generare il qrcode ?", () => {
                 waiting=1
