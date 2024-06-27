@@ -2,6 +2,13 @@
 
 DEFAULT_COMMIT_MESSAGE="Aggiunto"
 
+# build the client
+cd client
+npm run build 
+
+# return on repo main
+cd ..
+
 if [ $# -eq 0 ]; then
     COMMIT_MESSAGE="$DEFAULT_COMMIT_MESSAGE"
 else
