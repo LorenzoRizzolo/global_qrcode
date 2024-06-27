@@ -6,6 +6,7 @@ import { createConnection } from "./db";
 export async function login(username, password){
     let db = await createConnection();
     const result = await db.execute('SELECT * FROM users WHERE username=? and password=?', [username, password])
+    console.log(result)
     var find = result[0].length
     if(find){
         const user = result[0][0]
