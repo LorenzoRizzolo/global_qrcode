@@ -1,6 +1,6 @@
 import { j as json } from './index-BIAFQWR9.js';
 import { i as is_logged, g as get_user_by_token } from './login-DQl1-Wjt.js';
-import { a as get_qr_by_id, d as delete_qrcode, m as mine_qrcodes } from './qrcode-DPR1yr2q.js';
+import { a as get_qr_by_id, d as delete_qrcode } from './qrcode-DPR1yr2q.js';
 import 'fs';
 import 'dotenv';
 import 'mysql2/promise';
@@ -14,8 +14,7 @@ async function POST({ request }) {
       var user = await get_user_by_token(data.token);
       if (qrcode.id_user == user.id) {
         delete_qrcode(data.id);
-        var list = await mine_qrcodes(user.id);
-        return json({ code: 100, request: "ok", list });
+        return json({ code: 100, request: "ok" });
       }
       return json({ code: 101, request: "ko", detail: "Non hai i permessi per eliminare il QrCode" });
     } else {
@@ -28,4 +27,4 @@ async function POST({ request }) {
 }
 
 export { POST };
-//# sourceMappingURL=_server-DPSh0_OZ.js.map
+//# sourceMappingURL=_server-BI7wb9lw.js.map

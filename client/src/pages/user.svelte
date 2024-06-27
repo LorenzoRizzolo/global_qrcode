@@ -12,18 +12,18 @@
     {#if !$logged}
       <LoginPage/>
     {:else}
-      <Block inset strong>
+      <Block inset strong class="mine_block">
         <div class="center"><h1><Icon material="account_circle"/> {$user_data.name}</h1></div>
       </Block>
 
-      <Block strong inset>
+      <Block strong inset class="mine_block">
         <Button class="mine_but" tonal on:click={reload}><Icon material="refresh"/></Button>
       </Block>
 
           {#if $qrcodes}
             {#if $qrcodes.length}
               {#each Object.entries(mine_qrcodes) as [k, qr]}
-                <Block class="item-search" strong inset>
+                <Block class="item-search mine_block" strong inset>
                   <BlockTitle>{qr.title}</BlockTitle>
                     <UpdateQr {k} />
                     <Button tonal class="mine_but" on:click={()=>{scarica_qr(qr.id, qr.title)}}><Icon material="qr_code" title="scarica qrcode"/></Button>
@@ -38,13 +38,13 @@
                 </Block>
               {/each}
             {:else}
-                <Block strong inset>Nessun QrCode Trovato</Block>
+                <Block strong inset class="mine_block">Nessun QrCode Trovato</Block>
             {/if}
           {/if}
     {/if}
 
     {#if $logged}
-      <Block inset strong>
+      <Block inset strong class="mine_block">
         <Button color="red" on:click={logout}>Esci</Button>
       </Block>
     {/if}
@@ -104,12 +104,8 @@
         f7.dialog.confirm(
             "Vuoi eliminare il qrcode?",
             () => {
-              $qrcodes = []
                 delete_qrcode(id).then(data => {
-                    $qrcodes = data.list;
-                    if ($qrcodes) {
-                        $qrcodes = $qrcodes.reverse();
-                    }
+                    $qrcodes=$qrcodes.filter(item=>item.id!=id)
                     let t = f7.toast.create({
                       text: "QrCode deleted",
                       icon:'<i class="material-icons">check</i>',

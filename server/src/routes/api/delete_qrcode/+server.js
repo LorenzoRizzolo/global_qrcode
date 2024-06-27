@@ -10,8 +10,8 @@ export async function POST({ request }){
             var user = await get_user_by_token(data.token)
             if(qrcode.id_user==user.id){
                 delete_qrcode(data.id)
-                var list = await mine_qrcodes(user.id)
-                return json({code:100, request:"ok", list});
+                // var list = await mine_qrcodes(user.id)
+                return json({code:100, request:"ok"});
             }
             return json({code:101, request:"ko", detail:"Non hai i permessi per eliminare il QrCode"});
         }else{

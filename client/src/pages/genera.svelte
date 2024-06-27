@@ -15,11 +15,13 @@ import {
       Preloader,
       f7
     } from 'framework7-svelte';
+    import QrcodeView from '../components/qrcode_view.svelte';
 
     import { is_logged } from "../js/api/login"
     import { genera_qrcode, get_mine_qrcodes } from "../js/api/qrcode"
     import { saveAs } from "file-saver"
     import Dropzone from "svelte-file-dropzone";
+    import { isMobile } from '../js/common';
 
     let files = {
         accepted: [],
@@ -97,19 +99,20 @@ import {
         picker_stato.destroy()
     }
 
-    let response = {}
+    let response = {qrcode:""}
     let waiting = 0
     function genera_qr(){
         if(filedata.content){
-            let t = f7.toast.create({
-                text: "QrCode creato, caricamento...",
-                icon:'<i class="material-icons">check</i>',
-                position: 'center',
-                closeTimeout: 2000,
-            }); t.open();
             if(filedata.title==default_title){ filedata.title="QrCode anonimo" }
             f7.dialog.confirm("Confermi di voler generare il qrcode ?", () => {
+                let t = f7.toast.create({
+                    text: "QrCode creato, caricamento...",
+                    icon:'<i class="material-icons">check</i>',
+                    position: 'center',
+                    closeTimeout: 2000,
+                }); t.open();
                 waiting=1
+                f7.popup.open(".qrcode_view")
                 genera_qrcode(filedata).then(res=>{
                     response=res
                     $qrcodes = response.qrcodes
@@ -124,7 +127,6 @@ import {
                             type:tipologie[0],
                             stato:"privato"
                         }
-                        // editor.f7TextEditor.setValue('')    
                     }
                 })
                 
@@ -209,6 +211,7 @@ import {
     {/if}
 
     <div class="flex">
+
         <Block strong inset>
             <List strongIos outlineIos dividersIos>
                 <ListInput
@@ -273,23 +276,8 @@ import {
             {/if}
         </Block>
 
-        <Block strong inset>
-            <div class="center column">
-                <h2>QrCode</h2>
-                {#if !waiting}
-                    {#if response.qrcode}
-                        <br><br>
-                        <img class="qrcode" src={"data:image/png;base64,"+response.qrcode} alt="qrcode">
-                        <br>
-                        <Icon material="task_alt" color="green"/>  QrCode generato con successo  <br><br>
-                        <Button on:click={scarica_qr}><Icon material="cloud_download" title="scarica qrcode"/> Scarica QrCode</Button>
-                    {/if}
-                {:else}
-                    <div>Sto elaborando il QrCode</div>
-                    <Preloader/>
-                {/if}
-            </div>
-        </Block>
+        <QrcodeView qrcode={response.qrcode} title={filedata.title} {scarica_qr}/>
+
     </div>
 </Page>
 
@@ -302,75 +290,9 @@ import {
 
   @media (min-width:780px){
     .flex{
-        display: grid;
-        grid-template-columns: 70% 30%;
+        max-width: 700px;
+        margin: auto;
     }
   }
 
-    div.custom_file_upload {
-        height: 20px;
-    }
-
-    input.file {
-        width: 150px;
-        height: 20px;
-        border: 1px solid #BBB;
-        border-right: 0;
-        color: #888;
-        padding: 5px;
-        border-radius: 5px;
-        outline: none;
-    }
-
-    div.file_upload {
-        height: 34px;
-        background: #1e72c5;
-        background: -moz-linear-gradient(top, #1e72c5 0%, #1e72c5 44%, #4096ee 100%);
-        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#7abcff), color-stop(44%,#60abf8), color-stop(100%,#4096ee));
-        background: -webkit-linear-gradient(top, #7abcff 0%,#60abf8 44%,#4096ee 100%);
-        background: -o-linear-gradient(top, #7abcff 0%,#60abf8 44%,#4096ee 100%);
-        background: -ms-linear-gradient(top, #7abcff 0%,#60abf8 44%,#4096ee 100%);
-        background: linear-gradient(top, #7abcff 0%,#60abf8 44%,#4096ee 100%);
-        /* filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7abcff', endColorstr='#4096ee',GradientType=0 ); */
-        cursor: pointer;
-        border-radius: 5px;
-        border-top-right-radius: 5px;
-        border-bottom-right-radius: 5px;
-        font-weight: bold;
-        color: #FFF;
-        text-align: center;
-        padding-top: 8px;
-        margin-top: 20px;
-        margin-bottom: 40px;
-        margin: auto;
-        max-width: 250px;
-        
-    }
-    div.file_upload:before {
-        content: 'SELEZIONA FILE DA CARICARE';
-        position: absolute;
-        left: 0;
-        right: 0;
-        text-align: center;
-    }
-    div.foto_upload:before {
-        content: 'SCATTA FOTO' !important;
-    }
-    div.logo_upload:before {
-        content: 'SELEZIONA LOGO';
-    }
-    div.file_upload input {
-        position: relative;
-        height: 30px;
-        width: 200px;
-        margin-top: -30px;
-        display: inline;
-        opacity: 0;
-    }
-    div.file_upload:hover{
-        cursor: pointer;
-    }
-    input[type=file]:hover{
-        cursor: pointer;
-    }
 </style>
