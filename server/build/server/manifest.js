@@ -10,11 +10,11 @@ return {
 	assets: new Set(["favicon.png"]),
 	mimeTypes: {".png":"image/png"},
 	_: {
-		client: {"start":"_app/immutable/entry/start.AL7Ljg1K.js","app":"_app/immutable/entry/app.CBGf87vF.js","imports":["_app/immutable/entry/start.AL7Ljg1K.js","_app/immutable/chunks/entry.DKRz3bzJ.js","_app/immutable/chunks/scheduler.BvLojk_z.js","_app/immutable/entry/app.CBGf87vF.js","_app/immutable/chunks/scheduler.BvLojk_z.js","_app/immutable/chunks/index.fi1e1Nz5.js"],"stylesheets":[],"fonts":[],"uses_env_dynamic_public":false},
+		client: {"start":"_app/immutable/entry/start.lHraFrvv.js","app":"_app/immutable/entry/app.UhU661jj.js","imports":["_app/immutable/entry/start.lHraFrvv.js","_app/immutable/chunks/entry.CzKU0Ip0.js","_app/immutable/chunks/scheduler.BvLojk_z.js","_app/immutable/entry/app.UhU661jj.js","_app/immutable/chunks/scheduler.BvLojk_z.js","_app/immutable/chunks/index.CukP--xD.js"],"stylesheets":[],"fonts":[],"uses_env_dynamic_public":false},
 		nodes: [
-			__memo(() => import('./chunks/0-D0RzhiHk.js')),
-			__memo(() => import('./chunks/1-TnJlszxh.js')),
-			__memo(() => import('./chunks/2-CuBxPdHM.js'))
+			__memo(() => import('./chunks/0-CabuiMXv.js')),
+			__memo(() => import('./chunks/1-C-Uq7FEq.js')),
+			__memo(() => import('./chunks/2-DxPFlcNL.js'))
 		],
 		routes: [
 			{
@@ -29,21 +29,21 @@ return {
 				pattern: /^\/api\/create_qrcode\/?$/,
 				params: [],
 				page: null,
-				endpoint: __memo(() => import('./chunks/_server-DyamtCB3.js'))
+				endpoint: __memo(() => import('./chunks/_server-BcsbXjkt.js'))
 			},
 			{
 				id: "/api/delete_qrcode",
 				pattern: /^\/api\/delete_qrcode\/?$/,
 				params: [],
 				page: null,
-				endpoint: __memo(() => import('./chunks/_server-Dz-By-1R.js'))
+				endpoint: __memo(() => import('./chunks/_server-Cu7fS4Ud.js'))
 			},
 			{
 				id: "/api/get_content",
 				pattern: /^\/api\/get_content\/?$/,
 				params: [],
 				page: null,
-				endpoint: __memo(() => import('./chunks/_server-AWOum9Ee.js'))
+				endpoint: __memo(() => import('./chunks/_server-o8oVMtWA.js'))
 			},
 			{
 				id: "/api/get_me",
@@ -57,21 +57,21 @@ return {
 				pattern: /^\/api\/get_mine_qrcodes\/?$/,
 				params: [],
 				page: null,
-				endpoint: __memo(() => import('./chunks/_server-BgzTx5mx.js'))
+				endpoint: __memo(() => import('./chunks/_server-KICN92Bu.js'))
 			},
 			{
 				id: "/api/get_qr_by_id",
 				pattern: /^\/api\/get_qr_by_id\/?$/,
 				params: [],
 				page: null,
-				endpoint: __memo(() => import('./chunks/_server-B7jIvgvT.js'))
+				endpoint: __memo(() => import('./chunks/_server-CO5o9Fpd.js'))
 			},
 			{
 				id: "/api/get_qrcode",
 				pattern: /^\/api\/get_qrcode\/?$/,
 				params: [],
 				page: null,
-				endpoint: __memo(() => import('./chunks/_server-DScwCgUI.js'))
+				endpoint: __memo(() => import('./chunks/_server-BiNyEN8c.js'))
 			},
 			{
 				id: "/api/is_logged",
@@ -92,14 +92,14 @@ return {
 				pattern: /^\/api\/registrati\/?$/,
 				params: [],
 				page: null,
-				endpoint: __memo(() => import('./chunks/_server-DtxjAhvH.js'))
+				endpoint: __memo(() => import('./chunks/_server-DOh0qpSM.js'))
 			},
 			{
 				id: "/api/update_qrcode",
 				pattern: /^\/api\/update_qrcode\/?$/,
 				params: [],
 				page: null,
-				endpoint: __memo(() => import('./chunks/_server-CnTIaymC.js'))
+				endpoint: __memo(() => import('./chunks/_server-BzH7JA8C.js'))
 			}
 		],
 		matchers: async () => {

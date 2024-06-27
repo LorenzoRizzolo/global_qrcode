@@ -5,8 +5,11 @@ DEFAULT_COMMIT_MESSAGE="Aggiunto"
 # build the client
 cd client
 npm run build 
+cd ..
 
-# return on repo main
+# build server API
+cd server
+npm run build
 cd ..
 
 if [ $# -eq 0 ]; then
