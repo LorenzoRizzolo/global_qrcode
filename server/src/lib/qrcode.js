@@ -4,8 +4,9 @@ import { data, ora } from './functions';
 import { createConnection } from "./db";
 
 export async function generate_qrcode(user, filedata) {
+    let db
     try {
-        let db = await createConnection();
+        db = await createConnection();
         // inserisco i dati del qrcode nel database
         let qrcode_path
         let filepath = "files/"

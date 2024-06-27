@@ -90,6 +90,7 @@ import {
     }
 
     let default_title = "Titolo del QrCode"
+    let editor
     
     function onPageBeforeRemove(){
         picker_tipo.destroy()
@@ -109,8 +110,18 @@ import {
                     waiting=0
                     if(response.code!=100){
                         f7.dialog.alert(response.detail)
+                    }else{
+                        filedata = {
+                            title:default_title,
+                            content:"",
+                            extension:"",
+                            type:tipologie[0],
+                            stato:"privato"
+                        }
+                        // editor.f7TextEditor.setValue('')    
                     }
                 })
+                
             }, ()=>{}, "Genera QrCode");
         }else{
             f7.dialog.alert("Compila tutti i campi", "Error")
@@ -233,19 +244,10 @@ import {
                         buttons={[
                         ['bold', 'italic', 'underline']
                         ]}
+                        value={filedata.content}
                         onTextEditorChange={(value)=>filedata.content=value}
                     />
-                    <!-- <textarea bind:value={filedata.type} placeholder="Testo da immettere nel QrCode"></textarea> -->
                 {:else if filedata.type=="audio" || filedata.type=="immagine" || filedata.type=="video"}
-                    <!-- <div class="custom_file_upload">
-                        <div class="file_upload">
-                            <input
-                                bind:this={input}
-                                on:change={read_file}
-                                type="file"
-                            />
-                        </div>
-                    </div> -->
                     <Dropzone on:drop={read_file} multiple={false}>
                         Trascina qui il file o clicca qui per selezionarlo
                     </Dropzone>

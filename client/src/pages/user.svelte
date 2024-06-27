@@ -15,24 +15,32 @@
       <Block inset strong>
         <div class="center"><h1><Icon material="account_circle"/> {$user_data.name}</h1></div>
       </Block>
-      <Block class="search-list" inset strong>
+
+      <Block strong inset>
+        <Button class="mine_but" tonal on:click={reload}><Icon material="refresh"/></Button>
+      </Block>
+
           {#if $qrcodes}
             {#if $qrcodes.length}
-              {#each Object.entries($qrcodes) as [k, qr]}
-                <Block class="item-search">
+              {#each Object.entries(mine_qrcodes) as [k, qr]}
+                <Block class="item-search" strong inset>
                   <BlockTitle>{qr.title}</BlockTitle>
                     <UpdateQr {k} />
-                    <Link on:click={()=>{scarica_qr(qr.id, qr.title)}}><Icon material="qr_code" title="scarica qrcode"/></Link> 
-                    <Link on:click={()=>{scarica_contenuto(qr.id)}}><Icon material="download" title={"scarica "+qr.type}/></Link> 
-                    <Link on:click={()=>{delete_qr(qr.id)}}><Icon material="delete" color="red" title="elimina qrcode"/></Link> 
-                  { qr.stato} {qr.type} {qr.data} {qr.ora}
+                    <Button tonal class="mine_but" on:click={()=>{scarica_qr(qr.id, qr.title)}}><Icon material="qr_code" title="scarica qrcode"/></Button>
+                    <Button tonal class="mine_but" on:click={()=>{scarica_contenuto(qr.id)}}><Icon material="download" title={"scarica "+qr.type}/></Button>
+                    <Button tonal class="mine_but" on:click={()=>{delete_qr(qr.id)}}><Icon material="delete" color="red" title="elimina qrcode"/></Button>
+                    <!-- <br class="mobile"> -->
+                    <br>
+                    <div class="content">
+                      <b>Tipologia: </b>{ qr.type} <br>
+                      <b>Stato: </b>{qr.stato } <br>
+                      {qr.data} {qr.ora}</div>
                 </Block>
               {/each}
             {:else}
-                <div>Nessun QrCode Trovato</div>
+                <Block strong inset>Nessun QrCode Trovato</Block>
             {/if}
           {/if}
-      </Block>
     {/if}
 
     {#if $logged}
@@ -70,6 +78,9 @@
 
     let loading = false
 
+    let mine_qrcodes = []
+    qrcodes.subscribe(value=>mine_qrcodes=value)
+
     function reload(done){
       $qrcodes = []
       if($logged){
@@ -99,7 +110,12 @@
                     if ($qrcodes) {
                         $qrcodes = $qrcodes.reverse();
                     }
-                    f7.dialog.alert("QrCode eliminato");
+                    let t = f7.toast.create({
+                      text: "QrCode deleted",
+                      icon:'<i class="material-icons">check</i>',
+                      position: 'center',
+                      closeTimeout: 2000,
+                    }); t.open();
                     loading = true;
                 });
             },
@@ -158,18 +174,21 @@
         }
       })
     }
-
-    // var logged = false
-    // is_logged(localStorage.getItem("token")).then(res=>{
-    //   logged = res==100 
-    // })
-
-    // function reload(done){
-    //   setTimeout(() => {
-    //     console.log("ciao")
-    //     done()
-    //   }, 1000);
-    // }
-
-
   </script>
+
+  <style>
+    .content{
+      display: inline-block;
+      /* padding: 10px; */
+      border-radius: 10px;
+      /* background-color: var(--f7-button-tonal-bg-color); */
+    }
+    /* @media (max-width:780px){
+      .content{
+        margin-top: 5px;
+      }
+    } */
+      .content{
+        margin-top: 5px;
+      }
+  </style>

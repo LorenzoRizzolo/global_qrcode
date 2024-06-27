@@ -57,7 +57,7 @@
 </script>
 {#if $qrcodes[k]}
     
-    <Link popupOpen={".update-qr-"+$qrcodes[k].id}><Icon material="edit" title="modifica qrcode"/></Link> 
+    <Button class="mine_but" tonal popupOpen={".update-qr-"+$qrcodes[k].id}><Icon material="edit" title="modifica qrcode"/></Button> 
 
     <Popup {onPopupOpen} {onPopupClose} push class={"update-qr-"+$qrcodes[k].id}>
         <Page>

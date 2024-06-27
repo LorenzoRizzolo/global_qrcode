@@ -48,3 +48,19 @@
 .reader_el img{
   display: none !important;
 }
+
+.mine_but{
+  display: inline-block;
+}
+
+@media (max-width:780px){
+  .pc{
+    display: none;
+  }
+}
+
+@media (min-width:780px){
+  .mobile{
+    display: none;
+  }
+}
