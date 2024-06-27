@@ -130,6 +130,12 @@
 
     function scarica_qr(id, name){
         f7.dialog.confirm("Confermi di voler scaricare il qrcode ?", () => {
+            let t = f7.toast.create({
+              text: "Scarico...",
+              icon:'<i class="material-icons">check</i>',
+              position: 'center',
+              closeTimeout: 2000,
+            }); t.open();
             get_qrcode(id).then(data=>{
               var qrcode = data.qrcode
               if(qrcode){
