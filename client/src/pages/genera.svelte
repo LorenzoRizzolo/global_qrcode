@@ -91,7 +91,7 @@ import {
         });
     }
 
-    let default_title = "Titolo del QrCode"
+    let default_title = ""
     let editor
     
     function onPageBeforeRemove(){
