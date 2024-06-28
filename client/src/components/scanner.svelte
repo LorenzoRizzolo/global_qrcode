@@ -36,8 +36,8 @@ import {
 } from "framework7-svelte";
 import {Html5QrcodeScanner, Html5Qrcode} from "html5-qrcode";
 import { get_qr_by_id } from "../js/api/qrcode";
+import { qrcode_scanner_data } from "../js/store"
 
-export let data
 let loading = false
 
 let html5QrcodeScanner;
@@ -67,7 +67,8 @@ function onScanSuccess(decodedText, decodedResult) {
     var arr = decodedText.split("/")
     var id = arr[arr.length-1]
     get_qr_by_id(id).then(res=>{
-      data = res
+      $qrcode_scanner_data = res.qrcode
+      // console.log($qrcode_scanner_data)
       loading=false
     })
     app.f7.popup.close()

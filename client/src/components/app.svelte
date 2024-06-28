@@ -47,7 +47,6 @@
 
   import capacitorApp from '../js/capacitor-app';
   import routes from '../js/routes';
-  import store from '../js/store';
 
   const device = getDevice();
   // Framework7 Parameters
@@ -58,10 +57,6 @@
       primary: '#00f4ff',
     },
     darkMode: true,
-
-
-    // App store
-    store: store,
     // App routes
     routes: routes,
 
@@ -80,15 +75,7 @@
       androidOverlaysWebView: false,
     },
   };
-  // Login screen demo data
-  let username = '';
-  let password = '';
 
-  function alertLoginData() {
-    f7.dialog.alert('Username: ' + username + '<br>Password: ' + password, () => {
-      f7.loginScreen.close();
-    });
-  }
   onMount(() => {
     f7ready(() => {
 

@@ -13,16 +13,28 @@
     f7
     } from "framework7-svelte";
     import { update_qr } from "../js/api/qrcode"
-    import { qrcodes } from "../js/store";
+    import { qrcode_scanner_data, qrcodes } from "../js/store";
 
     // export let qr
-    export let k
-    let start_qr = JSON.parse(JSON.stringify($qrcodes[k]));
+    export let id
+
+    let qrcode = id!=undefined?$qrcodes.find(item=>item.id==id):{}
+    // console.log(qrcode)
+    let start_qr = JSON.parse(JSON.stringify(qrcode));
 
     let loading = false
     function update_qrcode(){
         loading = true
-        update_qr($qrcodes[k].id, $qrcodes[k].stato, $qrcodes[k].title).then(data=>{
+        update_qr(qrcode.id, qrcode.stato, qrcode.title).then(data=>{
+            $qrcode_scanner_data.title = qrcode.title
+            $qrcode_scanner_data.stato = qrcode.stato
+            $qrcodes.map(item=>{
+                if(item.id==id){
+                    item.title = qrcode.title
+                    item.stato = qrcode.stato
+                }else{ return item }
+            })
+            $qrcodes=$qrcodes
             loading=false
             f7.popup.close()
         })
@@ -31,8 +43,8 @@
     let picker_stato
     function onPopupOpen() {
         picker_stato = f7.picker.create({
-            inputEl: "#picker-stato-"+$qrcodes[k].id,
-            value: [$qrcodes[k].stato],
+            inputEl: "#picker-stato-"+qrcode.id,
+            value: [qrcode.stato],
             cols: [
                 {
                     textAlign: 'center',
@@ -41,25 +53,25 @@
             ],
             on: {
                 change(picker, values) {
-                    $qrcodes[k].stato = values[0]
+                    qrcode.stato = values[0]
                 }
             }
         });
     }
     
     function onPopupClose(){
-        console.log($qrcodes[k].title)
-        if(!$qrcodes[k].title){
-            $qrcodes[k].title = start_qr.title
+        // console.log(qrcode.title)
+        if(!qrcode.title){
+            qrcode.title = start_qr.title
         }
         picker_stato.destroy()
     }
 </script>
-{#if $qrcodes[k]}
+{#if qrcode}
     
-    <Button class="mine_but" tonal popupOpen={".update-qr-"+$qrcodes[k].id}><Icon material="edit" title="modifica qrcode"/></Button> 
+    <Button class="mine_but" tonal popupOpen={".update-qr-"+qrcode.id}><Icon material="edit" title="modifica qrcode"/></Button> 
 
-    <Popup {onPopupOpen} {onPopupClose} push class={"update-qr-"+$qrcodes[k].id}>
+    <Popup {onPopupOpen} {onPopupClose} push class={"update-qr-"+qrcode.id}>
         <Page>
         <Navbar title={"Aggiorna QrCode"} large transparent>
             <NavRight>
@@ -77,8 +89,8 @@
                         label="Titolo QrCode *"
                         type="text"
                         placeholder="Titolo QrCode *"
-                        on:load:value={$qrcodes[k].title}
-                        bind:value={$qrcodes[k].title}
+                        on:load:value={qrcode.title}
+                        bind:value={qrcode.title}
                         clearButton
                     />
                     <ListInput
@@ -88,7 +100,7 @@
                         placeholder="Stato del QrCode *"
                         name="stato"
                         label="Stato del QrCode *"
-                        inputId={"picker-stato-"+$qrcodes[k].id}
+                        inputId={"picker-stato-"+qrcode.id}
                     />
                 {:else}
                     <Block inset strong>Caricamento...</Block>

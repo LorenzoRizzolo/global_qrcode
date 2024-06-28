@@ -17,56 +17,58 @@
       </FabButtons>
     </Fab>
   
-    <Scanner bind:data/>
+    <Scanner/>
 
     {#if !$logged}
       <!-- <Login bind:logged/> -->
     {/if}
 
-    {#if data}
-      {#if data.code==100}
-        {#if data.qrcode.id_user==me.id || data.qrcode.stato=="pubblico"}
+    {#if my_qrcode.id!=undefined}
+        {#if my_qrcode.id_user==me.id || my_qrcode.stato=="pubblico"}
           <Block strong inset>
             <BlockTitle>Dati dalla scannerizzazione</BlockTitle>
-            {#if me.id==data.qrcode.id_user}
-              <b>Titolo:</b> {data.qrcode.title} <br><br>
-              <UpdateQr qr={data.qrcode}/>
-              <Link on:click={()=>{scarica_qr(data.qrcode.qrcode, data.qrcode.title)}}><Icon material="qr_code" title="scarica qrcode"/></Link> 
-              <Link on:click={()=>{scarica_contenuto(data.qrcode)}}><Icon material="download" title={"scarica "+data.qrcode.type}/></Link> 
-              <Link on:click={()=>{delete_qr(data.qrcode.id)}}><Icon material="delete" color="red" title="elimina qrcode"/></Link> 
-              { data.qrcode.stato} {data.qrcode.data} {data.qrcode.ora} <br><br>
-            {/if}
+            {#if me.id==my_qrcode.id_user}
+              <b>Titolo:</b> {my_qrcode.title} <br><br>
+              <UpdateQr id={my_qrcode.id}/>
+              <Button class="mine_but" tonal on:click={()=>{scarica_qr(my_qrcode.qrcode, my_qrcode.title)}}><Icon material="qr_code" title="scarica qrcode"/></Button> 
+              <Button class="mine_but" tonal on:click={()=>{scarica_contenuto(my_qrcode)}}><Icon material="download" title={"scarica "+my_qrcode.type}/></Button> 
+              <Button class="mine_but" tonal on:click={()=>{delete_qr(my_qrcode.id)}}><Icon material="delete" color="red" title="elimina qrcode"/></Button> 
+          
+              <div><br>
+                <div class="content">
+                  <b>Tipologia: </b>{ my_qrcode.type} <br>
+                  <b>Stato: </b>{my_qrcode.stato } <br>
+                  {my_qrcode.data} {my_qrcode.ora}</div>
+                <br><br>
 
-            {#if data.qrcode.file.type=="testo"}
-              {data.qrcode.file.content}
-            {:else if data.qrcode.file.type=="link"}
-             <a href={data.qrcode.file.content}>Apri link {data.qrcode.file.content}</a>
-            {:else if data.qrcode.file.type=="video"}
-              <div class="video">
-                <video controls>
-                  <source type="video/mp4" src="{`data:video/mp4;base64,${data.qrcode.file.content}`}">
-                  Your browser does not support the video tag.
-                </video>
+                <b>{my_qrcode.file.type}: </b><br>
+                {#if my_qrcode.file.type=="testo"}
+                  {my_qrcode.file.content}
+                {:else if my_qrcode.file.type=="link"}
+                <a href={my_qrcode.file.content}>Apri link {my_qrcode.file.content}</a>
+                {:else if my_qrcode.file.type=="video"}
+                  <div class="video">
+                    <video controls>
+                      <source type="video/mp4" src="{`data:video/mp4;base64,${my_qrcode.file.content}`}">
+                      <track kind="captions"/>
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                {:else if my_qrcode.file.type=="immagine"}
+                  <div class="video">
+                    <img src="{`data:image/png;base64,${my_qrcode.file.content}`}">
+                  </div>
+                {:else if my_qrcode.file.type=="audio"}
+                  <audio controls>
+                    <source type="audio/mp3" src="{`data:audio/mp3;base64,${base64Audio}`}">
+                    Your browser does not support the audio tag.
+                  </audio>
+                {/if}
               </div>
-            {:else if data.qrcode.file.type=="immagine"}
-              <div class="video">
-                <img src="{`data:image/png;base64,${data.qrcode.file.content}`}">
-              </div>
-            {:else if data.qrcode.file.type=="audio"}
-              <audio controls>
-                <source type="audio/mp3" src="{`data:audio/mp3;base64,${base64Audio}`}">
-                <!-- Fallback content -->
-                Your browser does not support the audio tag.
-              </audio>
             {/if}
             
           </Block>
         {/if}
-      {:else if data.code==101}
-          <Block strong inset>{data.detail}</Block>
-      {:else}
-          <Block strong inset>Errore</Block>
-      {/if}
     {:else}
       <Block strong inset>
         Premi sul pulsante <Icon material="add"/> al fondo della pagina per scannerizzare il QrCode
@@ -93,15 +95,22 @@
       Fab,
       FabButtons,
       FabButton,
-      Button
+      Button,
+      f7
     } from 'framework7-svelte';
 
     import UpdateQr from '../components/update_qr.svelte';
   
-    import { is_logged, get_me } from '../js/api/login';
+    import { get_me } from '../js/api/login';
     import Scanner from "../components/scanner.svelte";
-    import { logged, user_data } from '../js/store';
+    import { logged, user_data, qrcode_scanner_data, qrcodes } from '../js/store';
+    import { delete_qrcode } from '../js/api/qrcode';
 
+    let my_qrcode = {}
+    qrcode_scanner_data.subscribe(value=>{
+      // console.log(value)
+      my_qrcode=value
+    })
 
     function scarica_qr(qrcode, name){
       f7.dialog.confirm("Confermi di voler scaricare il qrcode ?", () => {
@@ -116,36 +125,50 @@
               const blob = new Blob([byteArray], {type: contentType});
               saveAs(blob, name+".png");
           }else{
-              f7.dialog.alert("QrCode non valido")
+            let t = f7.toast.create({
+              text: "QrCode non valido",
+              icon:'<i class="material-icons">error</i>',
+              position: 'center',
+              closeTimeout: 2000,
+            }); t.open();
           }
       });
     }
 
     function scarica_contenuto(qrcode){
-      // console.log(qrcode);
-      const byteCharacters = atob(qrcode.file.content);
-      const byteNumbers = new Array(byteCharacters.length);
-      for (let i = 0; i < byteCharacters.length; i++) {
-          byteNumbers[i] = byteCharacters.charCodeAt(i);
+      if(qrcode.file.type=="testo" || qrcode.file.type=="link"){
+        const byteCharacters = qrcode.file.content; // Il contenuto del file di testo
+        const byteArray = new Uint8Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteArray[i] = byteCharacters.charCodeAt(i);
+        }
+        const blob = new Blob([byteArray], { type: 'text/plain' }); // Specifica il tipo di contenuto come testo
+        saveAs(blob, qrcode.file.title + "." + qrcode.file.extension);
+      }else{
+        const byteCharacters = atob(qrcode.file.content);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        // Non specificare esplicitamente il tipo di contenuto
+        const blob = new Blob([byteArray]);
+        saveAs(blob, qrcode.file.title + "." + qrcode.file.extension);
       }
-      const byteArray = new Uint8Array(byteNumbers);
-      // Non specificare esplicitamente il tipo di contenuto
-      const blob = new Blob([byteArray]);
-      saveAs(blob, qrcode.title + "." + qrcode.file.extension);
     }
 
     function delete_qr(id){
-      qrcodes = []
       if($logged){
-        loading = false
         f7.dialog.confirm("Vuoi eliminare il qrcode?", ()=>{
           delete_qrcode(id).then(data=>{ 
-            qrcodes=data.list 
-            if(qrcodes){
-              qrcodes = qrcodes.reverse()
-            }
-            f7.dialog.alert("QrCode eliminato")
-            loading=true
+            $qrcodes=$qrcodes.filter(item=>item.id!=id)
+            $qrcode_scanner_data={}
+            let t = f7.toast.create({
+              text: "QrCode deleted",
+              icon:'<i class="material-icons">check</i>',
+              position: 'center',
+              closeTimeout: 2000,
+            }); t.open();
           })
         })
       }else{
@@ -153,7 +176,7 @@
       }
     }
 
-    let data
+    let data = {}
 
     var me = {}
     get_me().then(res=>{ 
@@ -181,4 +204,18 @@
         justify-content: center;
       }
     }
+    .content{
+      display: inline-block;
+      /* padding: 10px; */
+      border-radius: 10px;
+      /* background-color: var(--f7-button-tonal-bg-color); */
+    }
+    /* @media (max-width:780px){
+      .content{
+        margin-top: 5px;
+      }
+    } */
+      .content{
+        margin-top: 5px;
+      }
   </style>
