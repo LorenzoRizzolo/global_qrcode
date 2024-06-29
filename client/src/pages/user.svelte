@@ -9,6 +9,14 @@
       </NavRight>
     </Navbar>
 
+    <Fab position="right-bottom">
+        <Icon material="add" />
+        <Icon material="close" />
+        <FabButtons position="top">
+          <FabButton label="Scannerizza Qrcode"><Button iconMaterial="qr_code_scanner" link="#" popupOpen=".scanner"/></FabButton>
+        </FabButtons>
+    </Fab>
+
     {#if !$logged}
       <LoginPage/>
     {:else}
@@ -64,8 +72,10 @@
       f7,
       Subnavbar,
       Searchbar,
-      app
-
+      app,
+      Fab,
+      FabButton,
+      FabButtons
     } from 'framework7-svelte';
     import LoginPage from '../components/loginpage.svelte';
     import UpdateQr from '../components/update_qr.svelte';

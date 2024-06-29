@@ -13,6 +13,9 @@ import {
       Link,
       Icon,
       Preloader,
+      Fab,
+      FabButton,
+      FabButtons,
       f7
     } from 'framework7-svelte';
     import QrcodeView from '../components/qrcode_view.svelte';
@@ -200,6 +203,14 @@ import {
         {/if}
       </NavRight>
     </Navbar>
+
+    <Fab position="right-bottom">
+        <Icon material="add" />
+        <Icon material="close" />
+        <FabButtons position="top">
+          <FabButton label="Scannerizza Qrcode"><Button iconMaterial="qr_code_scanner" link="#" popupOpen=".scanner"/></FabButton>
+        </FabButtons>
+    </Fab>
 
     {#if !$logged}
         <Block inset strong>

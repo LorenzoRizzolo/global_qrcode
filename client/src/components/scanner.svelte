@@ -63,6 +63,7 @@ function validate_domain(domain){
 function onScanSuccess(decodedText, decodedResult) {
   if(validate_domain(decodedText)){
     stopScanner()
+    f7.views.main.router.navigate("/scanner/")
     loading=true
     var arr = decodedText.split("/")
     var id = arr[arr.length-1]

@@ -6,20 +6,24 @@ import ScannerPage from "../pages/scannerizza.svelte"
 var routes = [
   {
     path: '/',
+    browserHistoryTabs: "replace",
     component: generaPage,
   },
   {
     path: '/utente/',
+    browserHistoryTabs: "replace",
     component: userPage,
   },
   {
     path: '/scanner/',
+    browserHistoryTabs: "replace",
     component: ScannerPage,
   },
   {
     path: '(.*)',
+    browserHistoryTabs: "replace",
     component: NotFoundPage,
-  },
+  }
 ];
 
 export default routes;

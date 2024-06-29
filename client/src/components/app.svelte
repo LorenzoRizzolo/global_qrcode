@@ -5,18 +5,25 @@
   <Views tabs class="safe-areas">
     <!-- Tabbar for switching views-tabs -->
     <Toolbar tabbar icons bottom>
-      <!-- <Link id="#view-home" tabLink="#view-home" tabLinkActive iconMd="material:home" text="Home" /> -->
-      <Link id="#view-genera" tabLink="#view-genera" iconMd="material:qr_code_2" text="Genera" />
+      <!-- <Link id="#view-genera" tabLink="#view-genera" iconMd="material:qr_code_2" text="Genera" />
       <Link id="#view-utente" tabLink="#view-utente" iconMd="material:account_circle" text="Utente" />
-      <Link id="#view-scan" tabLink="#view-scan" iconMd="material:qr_code" text="Scannerizza" />
+      <Link id="#view-scan" tabLink="#view-scan" iconMd="material:qr_code" text="Scannerizza" /> -->
+      
+      <Link href="/" id="#view-genera" tabLink iconMd="material:qr_code_2" text="Genera" />
+      <Link href="/utente/" id="#view-utente" tabLink iconMd="material:account_circle" text="Utente" />
+      <Link href="/scanner/" id="#view-scan" tabLink iconMd="material:qr_code" text="Scannerizza" />
     </Toolbar>
 
     <!-- <View id="view-home" main tab tabActive url="/" /> -->
     <View id="view-genera" name="genera" tab tabActive main url="/" />
     <View id="view-utente" name="utente" tab url="/utente/" />
     <View id="view-scan" name="scan" tab url="/scanner/" />
+    
 
   </Views>
+
+
+  <Scanner/>
 </App>
 <script>
   import { onMount } from 'svelte';
@@ -42,11 +49,17 @@
     ListItem,
     ListInput,
     ListButton,
-    BlockFooter
+    BlockFooter,
+    Fab,
+    FabButton,
+    FabButtons,
+    Icon,
+    Button
   } from 'framework7-svelte';
 
   import capacitorApp from '../js/capacitor-app';
   import routes from '../js/routes';
+  import Scanner from './scanner.svelte';
 
   const device = getDevice();
   // Framework7 Parameters

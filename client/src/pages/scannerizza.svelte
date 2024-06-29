@@ -16,8 +16,6 @@
         <FabButton label="Scannerizza Qrcode"><Button iconMaterial="qr_code_scanner" link="#" popupOpen=".scanner"/></FabButton>
       </FabButtons>
     </Fab>
-  
-    <Scanner/>
 
     {#if !$logged}
       <!-- <Login bind:logged/> -->
@@ -25,7 +23,7 @@
 
     {#if my_qrcode.id!=undefined}
         {#if my_qrcode.id_user==me.id || my_qrcode.stato=="pubblico"}
-          <Block strong inset>
+          <Block strong inset class="mine_block">
             <BlockTitle>Dati dalla scannerizzazione</BlockTitle>
             {#if me.id==my_qrcode.id_user}
               <b>Titolo:</b> {my_qrcode.title} <br><br>
@@ -36,7 +34,7 @@
           
               <div><br>
                 <div class="content">
-                  <b>Tipologia: </b>{ my_qrcode.type} <br>
+                  <b>Tipologia: </b>{ my_qrcode.file.type} <br>
                   <b>Stato: </b>{my_qrcode.stato } <br>
                   {my_qrcode.data} {my_qrcode.ora}</div>
                 <br><br>
@@ -102,13 +100,11 @@
     import UpdateQr from '../components/update_qr.svelte';
   
     import { get_me } from '../js/api/login';
-    import Scanner from "../components/scanner.svelte";
     import { logged, user_data, qrcode_scanner_data, qrcodes } from '../js/store';
     import { delete_qrcode } from '../js/api/qrcode';
 
     let my_qrcode = {}
     qrcode_scanner_data.subscribe(value=>{
-      // console.log(value)
       my_qrcode=value
     })
 
